@@ -1,0 +1,7 @@
+Flask
+flask-cors
+python-dotenv
+mnemonic
+bip32
+pycoin
+requests
