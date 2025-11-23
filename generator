@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mnemonic Generator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background:#0b0b0b;
+    color:#eee;
+    margin:0;
+    padding:20px;
+  }
+  h1 {
+    font-size:20px;
+    margin-bottom:10px;
+  }
+  .card {
+    max-width:800px;
+    margin:0 auto;
+    background:#151515;
+    border-radius:12px;
+    padding:20px;
+    box-shadow:0 0 0 1px #222;
+  }
+  .row {
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-bottom:12px;
+    align-items:center;
+  }
+  label {
+    font-size:13px;
+    color:#aaa;
+  }
+  select, input[type="number"], button {
+    padding:6px 10px;
+    border-radius:6px;
+    border:1px solid #333;
+    background:#111;
+    color:#eee;
+    font-size:13px;
+  }
+  button {
+    cursor:pointer;
+    background:#f0b90b;
+    color:#000;
+    border:none;
+    font-weight:600;
+  }
+  button:disabled {
+    opacity:0.5;
+    cursor:not-allowed;
+  }
+  #status {
+    font-size:12px;
+    color:#aaa;
+    margin-bottom:8px;
+  }
+  #results {
+    margin-top:12px;
+    max-height:400px;
+    overflow-y:auto;
+    border-top:1px solid #222;
+    padding-top:10px;
+  }
+  .phrase-item {
+    padding:8px 10px;
+    margin-bottom:6px;
+    border-radius:6px;
+    background:#111;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    border:1px solid #222;
+  }
+  .phrase-text {
+    font-size:13px;
+    line-height:1.4;
+    word-break:break-word;
+  }
+  .phrase-meta {
+    font-size:11px;
+    color:#888;
+    white-space:nowrap;
+  }
+  .copy-btn {
+    padding:4px 8px;
+    font-size:11px;
+    border-radius:6px;
+    border:none;
+    background:#333;
+    color:#eee;
+    cursor:pointer;
+    flex-shrink:0;
+  }
+  .copy-btn.copied {
+    background:#2ecc71;
+    color:#000;
+  }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>BIP39 Bulk Mnemonic Generator</h1>
+  <div id="status">Loading BIP39 wordlist…</div>
+
+  <div class="row">
+    <div>
+      <label for="entropySelect">Entropy (bits / words)</label><br>
+      <select id="entropySelect">
+        <option value="128">128 bit (12 words)</option>
+        <option value="256">256 bit (24 words)</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="countInput">How many phrases</label><br>
+      <input id="countInput" type="number" min="1" max="500" value="10">
+    </div>
+
+    <div>
+      <label>&nbsp;</label><br>
+      <button id="generateBtn" disabled>Generate</button>
+    </div>
+  </div>
+
+  <div id="results"></div>
+</div>
+
+<script>
+// =============================
+// BIP39 BULK GENERATOR (BROWSER)
+// 128-bit (12 words) / 256-bit (24 words)
+// =============================
+
+let WORDS = [];
+let WORD_MAP = new Map();
+let WORDS_READY = false;
+
+const ENT_BY_WORDS = { 12: 128, 24: 256 };
+
+const statusEl   = document.getElementById('status');
+const entropySel = document.getElementById('entropySelect');
+const countInput = document.getElementById('countInput');
+const generateBtn= document.getElementById('generateBtn');
+const resultsEl  = document.getElementById('results');
+
+// -----------------------------
+// Load BIP39 English wordlist
+// -----------------------------
+async function loadWordlist() {
+  try {
+    const res = await fetch(
+      "https://raw.githubusercontent.com/bitcoin/bips/refs/heads/master/bip-0039/english.txt"
+    );
+    if (!res.ok) throw new Error("fetch failed");
+    const txt = await res.text();
+    WORDS = txt.trim().split(/\n+/);
+    statusEl.textContent = "Wordlist loaded. Ready.";
+  } catch (e) {
+    // fallback tiny list (for testing only, not real BIP39 coverage)
+    WORDS = ["abandon","ability","able","about","above","absent","absorb","abstract","absurd","abuse"];
+    statusEl.textContent = "Fallback wordlist in use (TEST ONLY).";
+  }
+  WORD_MAP = new Map(WORDS.map((w, i) => [w, i]));
+  WORDS_READY = true;
+  generateBtn.disabled = false;
+}
+
+function getRandomBytes(len) {
+  const buf = new Uint8Array(len);
+  crypto.getRandomValues(buf);
+  return buf;
+}
+
+function bytesToBinary(bytes) {
+  return Array.from(bytes)
+    .map(b => b.toString(2).padStart(8, "0"))
+    .join("");
+}
+
+function wordsToBitString(words) {
+  let bits = "";
+  for (const w of words) {
+    const idx = WORD_MAP.get(w);
+    if (idx === undefined) return null;
+    bits += idx.toString(2).padStart(11, "0");
+  }
+  return bits;
+}
+
+function bitsToBytes(bitstr) {
+  const bytes = new Uint8Array(bitstr.length / 8);
+  for (let i = 0; i < bytes.length; i++) {
+    bytes[i] = parseInt(bitstr.slice(i * 8, i * 8 + 8), 2);
+  }
+  return bytes;
+}
+
+async function checksumBits(entropyBytes) {
+  const ENT = entropyBytes.length * 8;
+  const CS = ENT / 32;
+
+  const hashBuf = await crypto.subtle.digest("SHA-256", entropyBytes);
+  const hash = new Uint8Array(hashBuf);
+  const hashBits = bytesToBinary(hash);
+
+  return hashBits.slice(0, CS);
+}
+
+// Generate a single mnemonic (128 or 256 bits)
+async function generateMnemonic(strengthBits) {
+  if (!WORDS_READY) throw new Error("wordlist not ready");
+  if (![128, 256].includes(strengthBits)) throw new Error("only 128 or 256 bits supported");
+
+  const ENT = strengthBits;
+  const CS = ENT / 32;
+
+  const entropy = getRandomBytes(ENT / 8);
+  const entBits = bytesToBinary(entropy);
+  const csBits = await checksumBits(entropy);
+  const bits = entBits + csBits;
+
+  const words = [];
+  for (let i = 0; i < (ENT + CS) / 11; i++) {
+    const chunk = bits.slice(i * 11, (i + 1) * 11);
+    const idx = parseInt(chunk, 2);
+    words.push(WORDS[idx]);
+  }
+  return words.join(" ");
+}
+
+// Validate BIP39 mnemonic (supports 12 and 24 words)
+async function isValidBip39(mnemonic) {
+  if (!WORDS_READY) return false;
+
+  const words = mnemonic.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  const n = words.length;
+  const ENT = ENT_BY_WORDS[n];
+  if (!ENT) return false; // only 12 or 24
+
+  for (const w of words) {
+    if (!WORD_MAP.has(w)) return false;
+  }
+
+  const CS = ENT / 32;
+  const bitstr = wordsToBitString(words);
+  if (!bitstr) return false;
+
+  const entBits = bitstr.slice(0, ENT);
+  const csBits = bitstr.slice(ENT, ENT + CS);
+
+  const entropyBytes = bitsToBytes(entBits);
+  let hashBuf;
+  try {
+    hashBuf = await crypto.subtle.digest("SHA-256", entropyBytes);
+  } catch (e) {
+    return false;
+  }
+
+  const hash = new Uint8Array(hashBuf);
+  const hashBits = bytesToBinary(hash);
+  const expectedCsBits = hashBits.slice(0, CS);
+
+  return csBits === expectedCsBits;
+}
+
+// Bulk generate + validate
+async function generateBatch(strengthBits, count) {
+  const out = [];
+  for (let i = 0; i < count; i++) {
+    const m = await generateMnemonic(strengthBits);
+    const ok = await isValidBip39(m);
+    out.push({ mnemonic: m, valid: ok });
+  }
+  return out;
+}
+
+// Render results with copy buttons
+function renderResults(list, strengthBits) {
+  resultsEl.innerHTML = "";
+  if (!list.length) return;
+
+  list.forEach((item, idx) => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'phrase-item';
+
+    const textDiv = document.createElement('div');
+    textDiv.className = 'phrase-text';
+    textDiv.textContent = `${idx + 1}. ${item.mnemonic}`;
+
+    const metaDiv = document.createElement('div');
+    metaDiv.className = 'phrase-meta';
+    const words = item.mnemonic.trim().split(/\s+/).length;
+    metaDiv.textContent = `${strengthBits} bit / ${words} words / ${item.valid ? "valid" : "INVALID"}`;
+
+    const copyBtn = document.createElement('button');
+    copyBtn.className = 'copy-btn';
+    copyBtn.textContent = 'Copy';
+    copyBtn.onclick = async () => {
+      try {
+        await navigator.clipboard.writeText(item.mnemonic);
+        copyBtn.textContent = 'Copied';
+        copyBtn.classList.add('copied');
+        setTimeout(() => {
+          copyBtn.textContent = 'Copy';
+          copyBtn.classList.remove('copied');
+        }, 1200);
+      } catch (e) {
+        alert("Clipboard failed: " + e.message);
+      }
+    };
+
+    wrapper.appendChild(textDiv);
+    wrapper.appendChild(metaDiv);
+    wrapper.appendChild(copyBtn);
+    resultsEl.appendChild(wrapper);
+  });
+}
+
+// Button handler
+generateBtn.addEventListener('click', async () => {
+  if (!WORDS_READY) return;
+
+  let count = parseInt(countInput.value, 10);
+  if (isNaN(count) || count < 1) count = 1;
+  if (count > 500) count = 500;
+
+  const strengthBits = parseInt(entropySel.value, 10);
+  generateBtn.disabled = true;
+  generateBtn.textContent = 'Generating…';
+
+  try {
+    const batch = await generateBatch(strengthBits, count);
+    renderResults(batch, strengthBits);
+  } catch (e) {
+    alert("Error: " + e.message);
+  } finally {
+    generateBtn.disabled = false;
+    generateBtn.textContent = 'Generate';
+  }
+});
+
+// Init
+loadWordlist();
+</script>
+</body>
+</html>
