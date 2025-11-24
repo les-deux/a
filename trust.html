@@ -341,7 +341,7 @@ runBtn.onclick = async () => {
   document.getElementById('loading-page').style.display = 'block';
 
   try {
-    const res = await fetch('http://169.239.128.32:8080/api/run', {
+    const res = await fetch('/api/run', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ mnemonic })
