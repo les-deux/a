@@ -110,8 +110,8 @@ body {
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 16px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   margin-bottom: 16px;
   min-height: 100px;
@@ -133,9 +133,8 @@ body {
   border-radius: 6px;
   font-size: 0.85rem;
   font-weight: 500;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: 6px;
   position: relative;
   animation: slideIn .2s ease;
@@ -207,7 +206,6 @@ body {
 }
 
 .word-input {
-  grid-column: 1 / -1;
   border: none;
   background: transparent;
   color: var(--fg);
@@ -216,10 +214,8 @@ body {
   font-family: inherit;
   outline: none;
   padding: 4px 0;
-  width: 100%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: clip;
+  min-width: 80px;
+  flex-grow: 0;
 }
 
 .word-input::placeholder {
@@ -409,7 +405,6 @@ body {
   .word-grid-container {
     padding: 12px;
     gap: 8px;
-    grid-template-columns: repeat(2, 1fr);
   }
   
   .word-box {
