@@ -14,10 +14,11 @@
   --label: #8a8a8a;
   --error: #ff6b6b;
   --success: #4ade80;
-  --badge-bg: #3a3a3a;
-  --badge-border: #555555;
-  --badge-text: #e8e8e8;
-  --badge-hover: #4a4a4a;
+  --badge-bg: #000000;
+  --badge-border: #333333;
+  --badge-text: #ffffff;
+  --badge-hover: #1a1a1a;
+  --badge-active-border: #ffffff;
 }
 
 * {
@@ -149,7 +150,12 @@ body {
 
 .word-badge:hover {
   background: var(--badge-hover);
-  border-color: #666;
+  border-color: #444;
+}
+
+.word-badge.active {
+  border-color: var(--badge-active-border);
+  background: var(--badge-bg);
 }
 
 .word-badge.error {
@@ -235,6 +241,22 @@ body {
 .word-input::placeholder {
   color: var(--label);
   font-size: 0.75rem;
+}
+
+.edit-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--badge-active-border);
+  color: var(--fg);
+  caret-color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-family: inherit;
+  outline: none;
+  padding: 0;
+  text-align: center;
+  min-width: 30px;
+  letter-spacing: 1.2px;
 }
 
 .actions {
@@ -526,6 +548,7 @@ const helperText = document.getElementById('helperText');
 
 let words = [];
 let revealedIndices = new Set();
+let activeEditIdx = null;
 let isPastingFromButton = false;
 const ENT_BY_WORDS = { 12: 128, 15: 160, 18: 192, 21: 224, 24: 256 };
 
@@ -588,30 +611,73 @@ function renderWords() {
     const badge = document.createElement('div');
     badge.className = 'word-badge';
     
+    if (activeEditIdx === idx) {
+      badge.classList.add('active');
+    }
+    
     const isValid = WORD_MAP.has(word);
     if (!isValid) badge.classList.add('error');
     
-    const isRevealed = revealedIndices.has(idx);
+    const isRevealed = activeEditIdx === idx || revealedIndices.has(idx);
     const wordDisplay = isRevealed ? word : (isValid ? getMaskedText(word) : word);
-    const wordTextClass = isValid ? (isRevealed ? 'revealed' : '') : 'invalid';
     
-    badge.innerHTML = `
-      <span class="word-number">${idx + 1}.</span>
-      <span class="word-text ${wordTextClass}">${wordDisplay}</span>
-      <button class="word-remove" type="button">×</button>
-    `;
-    
-    const wordText = badge.querySelector('.word-text');
-    wordText.onclick = (e) => {
-      e.stopPropagation();
-      revealedIndices.has(idx) ? revealedIndices.delete(idx) : revealedIndices.add(idx);
-      renderWords();
-    };
+    if (activeEditIdx === idx) {
+      badge.innerHTML = `
+        <span class="word-number">${idx + 1}.</span>
+        <input type="text" class="edit-input" value="${word}" autocomplete="off" spellcheck="false">
+        <button class="word-remove" type="button">×</button>
+      `;
+      
+      const editInput = badge.querySelector('.edit-input');
+      editInput.focus();
+      editInput.select();
+      
+      editInput.addEventListener('blur', () => {
+        const newWord = editInput.value.trim().toLowerCase();
+        if (newWord.length > 0) {
+          words[idx] = newWord;
+        }
+        activeEditIdx = null;
+        renderWords();
+        updateValidation();
+      });
+      
+      editInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          const newWord = editInput.value.trim().toLowerCase();
+          if (newWord.length > 0) {
+            words[idx] = newWord;
+          }
+          activeEditIdx = null;
+          renderWords();
+          updateValidation();
+        } else if (e.key === 'Escape') {
+          activeEditIdx = null;
+          renderWords();
+        }
+      });
+    } else {
+      const wordTextClass = isValid ? (revealedIndices.has(idx) ? 'revealed' : '') : 'invalid';
+      badge.innerHTML = `
+        <span class="word-number">${idx + 1}.</span>
+        <span class="word-text ${wordTextClass}">${wordDisplay}</span>
+        <button class="word-remove" type="button">×</button>
+      `;
+      
+      badge.onclick = (e) => {
+        if (!e.target.classList.contains('word-remove')) {
+          e.stopPropagation();
+          activeEditIdx = idx;
+          renderWords();
+        }
+      };
+    }
     
     badge.querySelector('.word-remove').onclick = (e) => {
       e.stopPropagation();
       words.splice(idx, 1);
       revealedIndices.delete(idx);
+      activeEditIdx = null;
       renderWords();
       mnemonicInput.focus();
       updateValidation();
@@ -686,7 +752,7 @@ function handleTyping() {
 }
 
 mnemonicInput.addEventListener('input', () => {
-  if (!isPastingFromButton) {
+  if (!isPastingFromButton && activeEditIdx === null) {
     handleTyping();
   }
 });
@@ -721,16 +787,22 @@ mnemonicInput.addEventListener('paste', async (e) => {
   
   words = pastedWords;
   revealedIndices.clear();
+  activeEditIdx = null;
   mnemonicInput.value = '';
   renderWords();
   await updateValidation();
 });
 
-wordContainer.addEventListener('click', () => mnemonicInput.focus());
+wordContainer.addEventListener('click', () => {
+  if (activeEditIdx === null) {
+    mnemonicInput.focus();
+  }
+});
 
 clearAllBtn.onclick = () => {
   words = [];
   revealedIndices.clear();
+  activeEditIdx = null;
   mnemonicInput.value = '';
   renderWords();
   updateValidation();
@@ -749,6 +821,7 @@ pasteBtn.onclick = async () => {
     
     words = pastedWords;
     revealedIndices.clear();
+    activeEditIdx = null;
     mnemonicInput.value = '';
     renderWords();
     await updateValidation();
