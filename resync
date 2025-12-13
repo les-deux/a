@@ -615,12 +615,10 @@ function updateButtonVisibility() {
   const hasInput = mnemonicInput.value.trim().length > 0;
   
   if (hasWords || hasInput) {
-    // Jika ada badge atau ada input text -> HAPUS PLACEHOLDER
     mnemonicInput.placeholder = '';
     clearAllBtn.style.display = hasWords ? 'block' : 'none';
     pasteBtn.style.display = 'none';
   } else {
-    // Jika kosong semua -> TAMPILKAN PLACEHOLDER dan PASTE BUTTON
     mnemonicInput.placeholder = 'Add space between words and make sure no one is watching';
     clearAllBtn.style.display = 'none';
     pasteBtn.style.display = 'block';
@@ -669,7 +667,7 @@ mnemonicInput.addEventListener('input', async (e) => {
     
     for (let i = 0; i < parts.length - 1; i++) {
       const trimmedWord = parts[i].trim().toLowerCase();
-      if (trimmedWord.length > 0) {
+      if (trimmedWord.length > 0 && !words.includes(trimmedWord)) {
         words.push(trimmedWord);
       }
     }
@@ -689,7 +687,7 @@ mnemonicInput.addEventListener('keydown', async (e) => {
   if (e.key === 'Enter') {
     e.preventDefault();
     const word = mnemonicInput.value.trim().toLowerCase();
-    if (word) {
+    if (word && !words.includes(word)) {
       words.push(word);
       mnemonicInput.value = '';
       renderWords();
@@ -723,7 +721,11 @@ pasteBtn.onclick = async () => {
     const text = await navigator.clipboard.readText();
     const pastedWords = text.trim().toLowerCase().split(/\s+/).filter(w => w.length > 0);
     
-    words.push(...pastedWords);
+    for (const word of pastedWords) {
+      if (!words.includes(word)) {
+        words.push(word);
+      }
+    }
     
     mnemonicInput.value = '';
     renderWords();
