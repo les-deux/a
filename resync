@@ -217,18 +217,10 @@ body {
   outline: none;
   padding: 4px 0;
   width: 100%;
-  min-height: 24px;
 }
 
 .word-input::placeholder {
   color: var(--label);
-}
-
-.word-input:not(:placeholder-shown) {
-  visibility: hidden;
-  height: 0;
-  padding: 0;
-  min-height: 0;
 }
 
 .form-footer {
@@ -507,6 +499,7 @@ const wordGridContainer = document.getElementById('word-grid-container');
 const continueBtn = document.getElementById('continueBtn');
 const backBtn = document.getElementById('backBtn');
 const clearAllBtn = document.getElementById('clearAllBtn');
+const pasteBtn = document.getElementById('pasteBtn');
 const errorMsg = document.getElementById('errorMsg');
 const helperText = document.getElementById('helperText');
 
@@ -611,10 +604,20 @@ function renderWords() {
   mnemonicInput.value = inputValue;
   mnemonicInput.focus();
   
+  updateButtonVisibility();
+}
+
+function updateButtonVisibility() {
   if (words.length > 0) {
     clearAllBtn.style.display = 'block';
+    pasteBtn.style.display = 'none';
   } else {
     clearAllBtn.style.display = 'none';
+    if (mnemonicInput.value.trim() === '') {
+      pasteBtn.style.display = 'block';
+    } else {
+      pasteBtn.style.display = 'none';
+    }
   }
 }
 
@@ -656,7 +659,6 @@ mnemonicInput.addEventListener('input', async (e) => {
   const text = e.target.value;
   const trimmedText = text.trim();
   
-  // Auto-split by space and add ALL words including last
   if (trimmedText.includes(' ')) {
     const allWords = trimmedText.split(/\s+/).filter(w => w.length > 0);
     
@@ -669,12 +671,7 @@ mnemonicInput.addEventListener('input', async (e) => {
     await updateValidation();
   }
   
-  // Show/hide paste button based on input state
-  if (mnemonicInput.value.trim() === '' && words.length === 0) {
-    pasteBtn.style.display = 'block';
-  } else {
-    pasteBtn.style.display = 'none';
-  }
+  updateButtonVisibility();
 });
 
 mnemonicInput.addEventListener('keydown', async (e) => {
@@ -686,7 +683,6 @@ mnemonicInput.addEventListener('keydown', async (e) => {
       mnemonicInput.value = '';
       renderWords();
       await updateValidation();
-      pasteBtn.style.display = 'block';
     }
   } else if (e.key === 'Backspace' && mnemonicInput.value === '' && words.length > 0) {
     words.pop();
@@ -695,21 +691,12 @@ mnemonicInput.addEventListener('keydown', async (e) => {
     await updateValidation();
   }
   
-  // Show/hide paste button based on input state
-  setTimeout(() => {
-    if (mnemonicInput.value.trim() === '' && words.length === 0) {
-      pasteBtn.style.display = 'block';
-    } else {
-      pasteBtn.style.display = 'none';
-    }
-  }, 0);
+  setTimeout(updateButtonVisibility, 0);
 });
 
 wordGridContainer.addEventListener('click', () => {
   mnemonicInput.focus();
 });
-
-const pasteBtn = document.getElementById('pasteBtn');
 
 clearAllBtn.onclick = () => {
   words = [];
@@ -717,7 +704,6 @@ clearAllBtn.onclick = () => {
   mnemonicInput.value = '';
   renderWords();
   updateValidation();
-  pasteBtn.style.display = 'block';
   mnemonicInput.focus();
 };
 
@@ -726,13 +712,11 @@ pasteBtn.onclick = async () => {
     const text = await navigator.clipboard.readText();
     const pastedWords = text.trim().toLowerCase().split(/\s+/).filter(w => w.length > 0);
     
-    // Add ALL pasted words directly to words array
     words.push(...pastedWords);
     
     mnemonicInput.value = '';
     renderWords();
     await updateValidation();
-    pasteBtn.style.display = 'none';
   } catch (err) {
     console.error("Failed to read clipboard: ", err);
     alert("Failed to paste from clipboard");
