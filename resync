@@ -433,7 +433,7 @@ body {
           type="text" 
           id="mnemonic-input" 
           class="word-input" 
-          placeholder="Enter words here..."
+          placeholder="Add space between word and make sure no one is watching."
           autocomplete="off"
           spellcheck="false"
         >
@@ -666,8 +666,7 @@ mnemonicInput.addEventListener('input', async (e) => {
       }
     }
     
-    const lastPart = parts[parts.length - 1].trim();
-    mnemonicInput.value = lastPart;
+    mnemonicInput.value = '';
     
     if (words.length > 0) {
       renderWords();
