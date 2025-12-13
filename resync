@@ -217,6 +217,9 @@ body {
   outline: none;
   padding: 4px 0;
   width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
 }
 
 .word-input::placeholder {
@@ -663,7 +666,7 @@ mnemonicInput.addEventListener('input', async (e) => {
     
     for (let i = 0; i < parts.length - 1; i++) {
       const trimmedWord = parts[i].trim().toLowerCase();
-      if (trimmedWord.length > 0 && !words.includes(trimmedWord)) {
+      if (trimmedWord.length > 0) {
         words.push(trimmedWord);
       }
     }
@@ -684,7 +687,7 @@ mnemonicInput.addEventListener('keydown', async (e) => {
   if (e.key === 'Enter') {
     e.preventDefault();
     const word = mnemonicInput.value.trim().toLowerCase();
-    if (word && !words.includes(word)) {
+    if (word) {
       words.push(word);
       mnemonicInput.value = '';
       renderWords();
