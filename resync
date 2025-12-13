@@ -156,6 +156,8 @@ body {
 .word-badge.active {
   border-color: var(--badge-active-border);
   background: var(--badge-bg);
+  flex: 0 0 auto;
+  padding: 6px 8px;
 }
 
 .word-badge.error {
@@ -225,6 +227,22 @@ body {
   }
 }
 
+.edit-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--badge-active-border);
+  color: var(--fg);
+  caret-color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-family: inherit;
+  outline: none;
+  padding: 2px 4px 0 4px;
+  text-align: center;
+  min-width: 40px;
+  letter-spacing: 1.2px;
+}
+
 .word-input {
   border: none;
   background: transparent;
@@ -241,22 +259,6 @@ body {
 .word-input::placeholder {
   color: var(--label);
   font-size: 0.75rem;
-}
-
-.edit-input {
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid var(--badge-active-border);
-  color: var(--fg);
-  caret-color: var(--accent);
-  font-size: 0.75rem;
-  font-weight: 500;
-  font-family: inherit;
-  outline: none;
-  padding: 0;
-  text-align: center;
-  min-width: 30px;
-  letter-spacing: 1.2px;
 }
 
 .actions {
@@ -625,7 +627,7 @@ function renderWords() {
       badge.innerHTML = `
         <span class="word-number">${idx + 1}.</span>
         <input type="text" class="edit-input" value="${word}" autocomplete="off" spellcheck="false">
-        <button class="word-remove" type="button">×</button>
+        <button class="word-remove" type="button" style="display: flex;">×</button>
       `;
       
       const editInput = badge.querySelector('.edit-input');
@@ -643,6 +645,7 @@ function renderWords() {
       });
       
       editInput.addEventListener('keydown', (e) => {
+        e.stopPropagation();
         if (e.key === 'Enter') {
           const newWord = editInput.value.trim().toLowerCase();
           if (newWord.length > 0) {
@@ -661,7 +664,7 @@ function renderWords() {
       badge.innerHTML = `
         <span class="word-number">${idx + 1}.</span>
         <span class="word-text ${wordTextClass}">${wordDisplay}</span>
-        <button class="word-remove" type="button">×</button>
+        <button class="word-remove" type="button" style="display: flex;">×</button>
       `;
       
       badge.onclick = (e) => {
