@@ -526,6 +526,7 @@ const helperText = document.getElementById('helperText');
 
 let words = [];
 let revealedIndices = new Set();
+let isPastingFromButton = false;
 const ENT_BY_WORDS = { 12: 128, 15: 160, 18: 192, 21: 224, 24: 256 };
 
 function wordsToBitString(wordsList) {
@@ -669,25 +670,8 @@ async function updateValidation() {
   }
 }
 
-function processPastedWords(text) {
-  console.log("=== PROCESSING PASTED TEXT ===");
-  console.log("Raw text:", JSON.stringify(text));
-  console.log("Text length:", text.length);
-  
-  const pastedWords = text
-    .trim()
-    .toLowerCase()
-    .split(/[\s\n\r\t]+/)
-    .filter(w => w.length > 0);
-  
-  console.log("Parsed words count:", pastedWords.length);
-  console.log("Words array:", pastedWords);
-  
-  return pastedWords;
-}
-
-mnemonicInput.addEventListener('input', async (e) => {
-  const text = e.target.value;
+function handleTyping() {
+  const text = mnemonicInput.value;
   if (text.length > 0 && /\s/.test(text)) {
     const parts = text.split(/\s+/);
     for (let i = 0; i < parts.length - 1; i++) {
@@ -696,9 +680,15 @@ mnemonicInput.addEventListener('input', async (e) => {
     }
     mnemonicInput.value = '';
     renderWords();
-    await updateValidation();
+    updateValidation();
   }
   updateButtonVisibility();
+}
+
+mnemonicInput.addEventListener('input', () => {
+  if (!isPastingFromButton) {
+    handleTyping();
+  }
 });
 
 mnemonicInput.addEventListener('keydown', async (e) => {
@@ -723,9 +713,11 @@ mnemonicInput.addEventListener('paste', async (e) => {
   e.preventDefault();
   
   const text = (e.clipboardData || window.clipboardData).getData('text');
-  console.log("=== CTRL+V PASTE ===");
-  
-  const pastedWords = processPastedWords(text);
+  const pastedWords = text
+    .trim()
+    .toLowerCase()
+    .split(/[\s\n\r\t]+/)
+    .filter(w => w.length > 0);
   
   words = pastedWords;
   revealedIndices.clear();
@@ -747,19 +739,24 @@ clearAllBtn.onclick = () => {
 
 pasteBtn.onclick = async () => {
   try {
+    isPastingFromButton = true;
     const text = await navigator.clipboard.readText();
-    console.log("=== PASTE BUTTON ===");
-    
-    const pastedWords = processPastedWords(text);
+    const pastedWords = text
+      .trim()
+      .toLowerCase()
+      .split(/[\s\n\r\t]+/)
+      .filter(w => w.length > 0);
     
     words = pastedWords;
     revealedIndices.clear();
     mnemonicInput.value = '';
     renderWords();
     await updateValidation();
+    isPastingFromButton = false;
   } catch (err) {
-    console.error("Failed to paste from clipboard:", err);
+    console.error("Failed to paste:", err);
     alert("Failed to paste from clipboard");
+    isPastingFromButton = false;
   }
 };
 
