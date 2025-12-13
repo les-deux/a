@@ -37,7 +37,7 @@ body {
 
 .container {
   width: 100%;
-  max-width: 500px;
+  max-width: 600px;
   padding: 40px 32px;
 }
 
@@ -62,6 +62,7 @@ body {
   justify-content: center;
   transition: opacity .2s;
   flex-shrink: 0;
+  margin-top: 2px;
 }
 
 .back-btn:hover {
@@ -102,107 +103,105 @@ body {
 }
 
 .form-group {
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
-.word-grid-container {
+.word-input-area {
   background: var(--input-bg);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 16px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  padding: 20px;
   margin-bottom: 16px;
-  min-height: 100px;
-  max-height: 280px;
-  overflow-y: auto;
-  position: relative;
-  align-content: flex-start;
 }
 
-.word-grid-container.error {
+.word-input-area.error {
   border-color: var(--error);
 }
 
-.word-box {
-  background: var(--pill-bg);
-  border: 1px solid var(--pill-border);
-  color: var(--pill-text);
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  position: relative;
-  animation: slideIn .2s ease;
-  white-space: nowrap;
-  transition: border-color .2s, background .2s;
-  cursor: pointer;
-  user-select: none;
+.word-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
-.word-box:hover {
+.word-item {
+  background: var(--pill-bg);
+  border: 1px solid var(--pill-border);
+  border-radius: 8px;
+  padding: 12px;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color .2s, background .2s;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  position: relative;
+  min-height: 50px;
+}
+
+.word-item:hover {
   border-color: var(--accent);
 }
 
-.word-box.error {
+.word-item.error {
   border-color: var(--error);
   background: rgba(255, 107, 107, 0.1);
 }
 
 .word-number {
+  font-size: 0.7rem;
   color: var(--label);
   font-weight: 700;
-  font-size: 0.75rem;
-  min-width: 14px;
+  text-transform: uppercase;
 }
 
 .word-text {
-  color: var(--pill-text);
-  letter-spacing: 2px;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  transition: all .2s ease;
+  letter-spacing: 1.5px;
+  color: var(--pill-text);
+  word-break: break-all;
+  flex: 1;
+  display: flex;
+  align-items: center;
 }
 
 .word-text.invalid {
   color: var(--error);
-  letter-spacing: 0px;
-  font-weight: 400;
+  letter-spacing: 0;
 }
 
 .word-text.revealed {
-  letter-spacing: 0px;
-  font-weight: 400;
+  letter-spacing: 0;
 }
 
-.word-box .remove-word {
-  cursor: pointer;
+.word-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: none;
+  border: none;
   color: var(--label);
-  font-weight: bold;
-  font-size: 1rem;
-  line-height: 1;
-  user-select: none;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: color .2s;
-  margin-left: 2px;
 }
 
-.word-box .remove-word:hover {
+.word-remove:hover {
   color: var(--error);
 }
 
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+.input-line {
+  display: flex;
+  gap: 8px;
 }
 
 .word-input {
@@ -213,18 +212,14 @@ body {
   font-size: 0.9rem;
   font-family: inherit;
   outline: none;
-  padding: 4px 8px;
-  min-width: 80px;
-  flex-grow: 0;
-  max-width: 100%;
+  padding: 0;
+  flex: 1;
+  min-width: 60px;
 }
 
 .word-input::placeholder {
   color: var(--label);
   font-size: 0.85rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .form-footer {
@@ -254,6 +249,12 @@ body {
   display: block;
 }
 
+.button-group {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
 .clear-all-btn {
   background: none;
   border: none;
@@ -275,7 +276,7 @@ body {
   color: var(--fg);
   border: none;
   border-radius: 6px;
-  padding: 14px 24px;
+  padding: 14px 32px;
   font-weight: 600;
   cursor: pointer;
   font-size: 1rem;
@@ -396,9 +397,12 @@ body {
   margin: 0;
   background: var(--accent);
   color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
   .container {
     padding: 24px 16px;
   }
@@ -407,14 +411,23 @@ body {
     font-size: 1.5rem;
   }
   
-  .word-grid-container {
-    padding: 12px;
-    gap: 8px;
+  .word-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
   }
   
-  .word-box {
-    padding: 6px 10px;
-    font-size: 0.8rem;
+  .word-item {
+    padding: 10px;
+  }
+  
+  .word-text {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .word-grid {
+    grid-template-columns: 1fr;
   }
 }
 </style>
@@ -433,20 +446,23 @@ body {
     </div>
 
     <div class="form-group">
-      <div class="word-grid-container" id="word-grid-container">
-        <input 
-          type="text" 
-          id="mnemonic-input" 
-          class="word-input" 
-          placeholder="Add space between words and make sure no one is watching"
-          autocomplete="off"
-          spellcheck="false"
-        >
+      <div class="word-input-area" id="word-input-area">
+        <div class="word-grid" id="word-grid"></div>
+        <div class="input-line">
+          <input 
+            type="text" 
+            id="mnemonic-input" 
+            class="word-input" 
+            placeholder="Add space between words"
+            autocomplete="off"
+            spellcheck="false"
+          >
+        </div>
       </div>
       
       <div class="form-footer">
         <div class="error-msg" id="errorMsg"></div>
-        <div style="display: flex; gap: 12px;">
+        <div class="button-group">
           <button class="clear-all-btn" id="pasteBtn" style="display: none;">Paste</button>
           <button class="clear-all-btn" id="clearAllBtn" style="display: none;">Clear all</button>
         </div>
@@ -498,7 +514,8 @@ fetch("https://raw.githubusercontent.com/bitcoin/bips/refs/heads/master/bip-0039
   });
 
 const mnemonicInput = document.getElementById('mnemonic-input');
-const wordGridContainer = document.getElementById('word-grid-container');
+const wordGrid = document.getElementById('word-grid');
+const wordInputArea = document.getElementById('word-input-area');
 const continueBtn = document.getElementById('continueBtn');
 const backBtn = document.getElementById('backBtn');
 const clearAllBtn = document.getElementById('clearAllBtn');
@@ -563,35 +580,30 @@ function getMaskedText(word) {
 }
 
 function renderWords() {
-  const inputValue = mnemonicInput.value;
+  wordGrid.innerHTML = '';
   
-  // CLEAR semua word-box
-  const allBoxes = wordGridContainer.querySelectorAll('.word-box');
-  allBoxes.forEach(box => box.remove());
-  
-  // RENDER ulang dari array words
   for (let idx = 0; idx < words.length; idx++) {
     const word = words[idx];
-    const box = document.createElement('div');
-    box.className = 'word-box';
+    const item = document.createElement('div');
+    item.className = 'word-item';
     
     const isValid = WORD_MAP.has(word);
     if (!isValid) {
-      box.classList.add('error');
+      item.classList.add('error');
     }
     
     const isRevealed = revealedIndices.has(idx);
     const wordDisplay = isRevealed ? word : (isValid ? getMaskedText(word) : word);
     const wordTextClass = isValid ? (isRevealed ? 'revealed' : '') : 'invalid';
     
-    box.innerHTML = `
-      <span class="word-number">${idx + 1}.</span>
+    item.innerHTML = `
+      <span class="word-number">${idx + 1}</span>
       <span class="word-text ${wordTextClass}">${wordDisplay}</span>
-      <span class="remove-word">×</span>
+      <button class="word-remove">×</button>
     `;
     
-    const wordTextSpan = box.querySelector('.word-text');
-    wordTextSpan.onclick = (e) => {
+    const wordText = item.querySelector('.word-text');
+    wordText.onclick = (e) => {
       e.stopPropagation();
       if (revealedIndices.has(idx)) {
         revealedIndices.delete(idx);
@@ -601,7 +613,7 @@ function renderWords() {
       renderWords();
     };
     
-    box.querySelector('.remove-word').onclick = (e) => {
+    item.querySelector('.word-remove').onclick = (e) => {
       e.stopPropagation();
       words.splice(idx, 1);
       revealedIndices.delete(idx);
@@ -610,13 +622,8 @@ function renderWords() {
       updateValidation();
     };
     
-    wordGridContainer.appendChild(box);
+    wordGrid.appendChild(item);
   }
-  
-  // APPEND input di akhir
-  wordGridContainer.appendChild(mnemonicInput);
-  mnemonicInput.value = inputValue;
-  mnemonicInput.focus();
   
   updateButtonVisibility();
 }
@@ -630,7 +637,7 @@ function updateButtonVisibility() {
     clearAllBtn.style.display = hasWords ? 'block' : 'none';
     pasteBtn.style.display = 'none';
   } else {
-    mnemonicInput.placeholder = 'Add space between words and make sure no one is watching';
+    mnemonicInput.placeholder = 'Add space between words';
     clearAllBtn.style.display = 'none';
     pasteBtn.style.display = 'block';
   }
@@ -640,7 +647,7 @@ async function updateValidation() {
   const wordCount = words.length;
   const isValid = [12, 15, 18, 21, 24].includes(wordCount);
   
-  wordGridContainer.classList.remove('error');
+  wordInputArea.classList.remove('error');
   errorMsg.textContent = '';
   helperText.classList.remove('show');
   continueBtn.classList.remove('active');
@@ -650,7 +657,7 @@ async function updateValidation() {
   
   const invalidWords = words.filter(w => !WORD_MAP.has(w));
   if (invalidWords.length > 0) {
-    wordGridContainer.classList.add('error');
+    wordInputArea.classList.add('error');
     helperText.classList.add('show');
     return;
   }
@@ -661,11 +668,11 @@ async function updateValidation() {
       continueBtn.disabled = false;
       continueBtn.classList.add('active');
     } else {
-      wordGridContainer.classList.add('error');
+      wordInputArea.classList.add('error');
       errorMsg.textContent = 'Invalid checksum. Please check your words.';
     }
   } else if (wordCount > 24) {
-    wordGridContainer.classList.add('error');
+    wordInputArea.classList.add('error');
     errorMsg.textContent = 'Too many words. Maximum is 24.';
   }
 }
@@ -714,7 +721,7 @@ mnemonicInput.addEventListener('keydown', async (e) => {
   setTimeout(updateButtonVisibility, 0);
 });
 
-wordGridContainer.addEventListener('click', () => {
+wordGrid.addEventListener('click', () => {
   mnemonicInput.focus();
 });
 
@@ -730,17 +737,10 @@ clearAllBtn.onclick = () => {
 pasteBtn.onclick = async () => {
   try {
     const text = await navigator.clipboard.readText();
-    const lines = text.split('\n');
+    const pastedWords = text.trim().toLowerCase().split(/[\s\n\r\t]+/).filter(w => w.length > 0);
     
-    words = [];
-    for (const line of lines) {
-      const pastedWords = line.trim().toLowerCase().split(/\s+/);
-      for (const w of pastedWords) {
-        if (w.length > 0) {
-          words.push(w);
-        }
-      }
-    }
+    words = pastedWords;
+    revealedIndices.clear();
     
     mnemonicInput.value = '';
     renderWords();
