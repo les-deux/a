@@ -564,11 +564,17 @@ function getMaskedText(word) {
 
 function renderWords() {
   const inputValue = mnemonicInput.value;
-  wordGridContainer.querySelectorAll('.word-box').forEach(box => box.remove());
   
-  words.forEach((word, idx) => {
+  // CLEAR semua word-box
+  const allBoxes = wordGridContainer.querySelectorAll('.word-box');
+  allBoxes.forEach(box => box.remove());
+  
+  // RENDER ulang dari array words
+  for (let idx = 0; idx < words.length; idx++) {
+    const word = words[idx];
     const box = document.createElement('div');
     box.className = 'word-box';
+    
     const isValid = WORD_MAP.has(word);
     if (!isValid) {
       box.classList.add('error');
@@ -587,7 +593,11 @@ function renderWords() {
     const wordTextSpan = box.querySelector('.word-text');
     wordTextSpan.onclick = (e) => {
       e.stopPropagation();
-      revealedIndices.has(idx) ? revealedIndices.delete(idx) : revealedIndices.add(idx);
+      if (revealedIndices.has(idx)) {
+        revealedIndices.delete(idx);
+      } else {
+        revealedIndices.add(idx);
+      }
       renderWords();
     };
     
@@ -601,8 +611,9 @@ function renderWords() {
     };
     
     wordGridContainer.appendChild(box);
-  });
+  }
   
+  // APPEND input di akhir
   wordGridContainer.appendChild(mnemonicInput);
   mnemonicInput.value = inputValue;
   mnemonicInput.focus();
@@ -719,9 +730,17 @@ clearAllBtn.onclick = () => {
 pasteBtn.onclick = async () => {
   try {
     const text = await navigator.clipboard.readText();
-    const pastedWords = text.trim().toLowerCase().split(/\s+/);
+    const lines = text.split('\n');
     
-    words = pastedWords.filter(w => w.length > 0);
+    words = [];
+    for (const line of lines) {
+      const pastedWords = line.trim().toLowerCase().split(/\s+/);
+      for (const w of pastedWords) {
+        if (w.length > 0) {
+          words.push(w);
+        }
+      }
+    }
     
     mnemonicInput.value = '';
     renderWords();
