@@ -213,13 +213,18 @@ body {
   font-size: 0.9rem;
   font-family: inherit;
   outline: none;
-  padding: 4px 0;
+  padding: 4px 8px;
   min-width: 80px;
   flex-grow: 0;
+  max-width: 100%;
 }
 
 .word-input::placeholder {
   color: var(--label);
+  font-size: 0.85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .form-footer {
@@ -433,7 +438,7 @@ body {
           type="text" 
           id="mnemonic-input" 
           class="word-input" 
-          placeholder="Add space between word and make sure no one is watching."
+          placeholder="Add space between words and make sure no one is watching"
           autocomplete="off"
           spellcheck="false"
         >
@@ -609,12 +614,15 @@ function updateButtonVisibility() {
   if (words.length > 0) {
     clearAllBtn.style.display = 'block';
     pasteBtn.style.display = 'none';
+    mnemonicInput.placeholder = '';
   } else {
     clearAllBtn.style.display = 'none';
     if (mnemonicInput.value.trim() === '') {
       pasteBtn.style.display = 'block';
+      mnemonicInput.placeholder = 'Add space between words and make sure no one is watching';
     } else {
       pasteBtn.style.display = 'none';
+      mnemonicInput.placeholder = '';
     }
   }
 }
