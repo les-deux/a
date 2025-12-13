@@ -611,19 +611,19 @@ function renderWords() {
 }
 
 function updateButtonVisibility() {
-  if (words.length > 0) {
-    clearAllBtn.style.display = 'block';
-    pasteBtn.style.display = 'none';
+  const hasWords = words.length > 0;
+  const hasInput = mnemonicInput.value.trim().length > 0;
+  
+  if (hasWords || hasInput) {
+    // Jika ada badge atau ada input text -> HAPUS PLACEHOLDER
     mnemonicInput.placeholder = '';
+    clearAllBtn.style.display = hasWords ? 'block' : 'none';
+    pasteBtn.style.display = 'none';
   } else {
+    // Jika kosong semua -> TAMPILKAN PLACEHOLDER dan PASTE BUTTON
+    mnemonicInput.placeholder = 'Add space between words and make sure no one is watching';
     clearAllBtn.style.display = 'none';
-    if (mnemonicInput.value.trim() === '') {
-      pasteBtn.style.display = 'block';
-      mnemonicInput.placeholder = 'Add space between words and make sure no one is watching';
-    } else {
-      pasteBtn.style.display = 'none';
-      mnemonicInput.placeholder = '';
-    }
+    pasteBtn.style.display = 'block';
   }
 }
 
