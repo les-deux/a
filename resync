@@ -110,98 +110,103 @@ body {
   background: var(--input-bg);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 20px;
+  padding: 16px;
   margin-bottom: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-content: flex-start;
+  min-height: 240px;
 }
 
 .word-input-area.error {
   border-color: var(--error);
 }
 
-.word-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-.word-item {
+.word-badge {
   background: var(--pill-bg);
   border: 1px solid var(--pill-border);
-  border-radius: 8px;
-  padding: 12px;
+  color: var(--pill-text);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  animation: slideIn .2s ease;
+  white-space: nowrap;
+  transition: border-color .2s, background .2s;
   cursor: pointer;
   user-select: none;
-  transition: border-color .2s, background .2s;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
-  position: relative;
-  min-height: 50px;
+  flex: 0 0 calc(33.333% - 6px);
+  justify-content: space-between;
 }
 
-.word-item:hover {
+.word-badge:hover {
   border-color: var(--accent);
 }
 
-.word-item.error {
+.word-badge.error {
   border-color: var(--error);
   background: rgba(255, 107, 107, 0.1);
 }
 
 .word-number {
-  font-size: 0.7rem;
   color: var(--label);
   font-weight: 700;
-  text-transform: uppercase;
+  font-size: 0.75rem;
+  min-width: 16px;
 }
 
 .word-text {
-  font-size: 0.9rem;
-  font-weight: 600;
-  letter-spacing: 1.5px;
   color: var(--pill-text);
-  word-break: break-all;
+  letter-spacing: 1.5px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: all .2s ease;
   flex: 1;
-  display: flex;
-  align-items: center;
+  text-align: center;
 }
 
 .word-text.invalid {
   color: var(--error);
-  letter-spacing: 0;
+  letter-spacing: 0px;
+  font-weight: 400;
 }
 
 .word-text.revealed {
-  letter-spacing: 0;
+  letter-spacing: 0px;
 }
 
 .word-remove {
-  position: absolute;
-  top: 4px;
-  right: 4px;
+  cursor: pointer;
+  color: var(--label);
+  font-weight: bold;
+  font-size: 1rem;
+  line-height: 1;
+  user-select: none;
+  transition: color .2s;
   background: none;
   border: none;
-  color: var(--label);
-  cursor: pointer;
-  font-size: 18px;
   padding: 0;
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color .2s;
+  margin-left: 2px;
 }
 
 .word-remove:hover {
   color: var(--error);
 }
 
-.input-line {
-  display: flex;
-  gap: 8px;
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .word-input {
@@ -212,8 +217,8 @@ body {
   font-size: 0.9rem;
   font-family: inherit;
   outline: none;
-  padding: 0;
-  flex: 1;
+  padding: 4px 8px;
+  flex: 0 0 calc(33.333% - 6px);
   min-width: 60px;
 }
 
@@ -402,7 +407,7 @@ body {
   cursor: pointer;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 480px) {
   .container {
     padding: 24px 16px;
   }
@@ -411,23 +416,13 @@ body {
     font-size: 1.5rem;
   }
   
-  .word-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+  .word-badge,
+  .word-input {
+    flex: 0 0 calc(50% - 4px);
   }
   
-  .word-item {
-    padding: 10px;
-  }
-  
-  .word-text {
-    font-size: 0.85rem;
-  }
-}
-
-@media (max-width: 400px) {
-  .word-grid {
-    grid-template-columns: 1fr;
+  .word-input-area {
+    min-height: 320px;
   }
 }
 </style>
@@ -447,17 +442,14 @@ body {
 
     <div class="form-group">
       <div class="word-input-area" id="word-input-area">
-        <div class="word-grid" id="word-grid"></div>
-        <div class="input-line">
-          <input 
-            type="text" 
-            id="mnemonic-input" 
-            class="word-input" 
-            placeholder="Add space between words"
-            autocomplete="off"
-            spellcheck="false"
-          >
-        </div>
+        <input 
+          type="text" 
+          id="mnemonic-input" 
+          class="word-input" 
+          placeholder="Add space between words and make sure no one is watching"
+          autocomplete="off"
+          spellcheck="false"
+        >
       </div>
       
       <div class="form-footer">
@@ -514,7 +506,6 @@ fetch("https://raw.githubusercontent.com/bitcoin/bips/refs/heads/master/bip-0039
   });
 
 const mnemonicInput = document.getElementById('mnemonic-input');
-const wordGrid = document.getElementById('word-grid');
 const wordInputArea = document.getElementById('word-input-area');
 const continueBtn = document.getElementById('continueBtn');
 const backBtn = document.getElementById('backBtn');
@@ -580,29 +571,33 @@ function getMaskedText(word) {
 }
 
 function renderWords() {
-  wordGrid.innerHTML = '';
+  const inputValue = mnemonicInput.value;
   
+  // CLEAR badges
+  wordInputArea.querySelectorAll('.word-badge').forEach(badge => badge.remove());
+  
+  // RENDER badges
   for (let idx = 0; idx < words.length; idx++) {
     const word = words[idx];
-    const item = document.createElement('div');
-    item.className = 'word-item';
+    const badge = document.createElement('div');
+    badge.className = 'word-badge';
     
     const isValid = WORD_MAP.has(word);
     if (!isValid) {
-      item.classList.add('error');
+      badge.classList.add('error');
     }
     
     const isRevealed = revealedIndices.has(idx);
     const wordDisplay = isRevealed ? word : (isValid ? getMaskedText(word) : word);
     const wordTextClass = isValid ? (isRevealed ? 'revealed' : '') : 'invalid';
     
-    item.innerHTML = `
-      <span class="word-number">${idx + 1}</span>
+    badge.innerHTML = `
+      <span class="word-number">${idx + 1}.</span>
       <span class="word-text ${wordTextClass}">${wordDisplay}</span>
-      <button class="word-remove">×</button>
+      <button class="word-remove" type="button">×</button>
     `;
     
-    const wordText = item.querySelector('.word-text');
+    const wordText = badge.querySelector('.word-text');
     wordText.onclick = (e) => {
       e.stopPropagation();
       if (revealedIndices.has(idx)) {
@@ -613,7 +608,7 @@ function renderWords() {
       renderWords();
     };
     
-    item.querySelector('.word-remove').onclick = (e) => {
+    badge.querySelector('.word-remove').onclick = (e) => {
       e.stopPropagation();
       words.splice(idx, 1);
       revealedIndices.delete(idx);
@@ -622,8 +617,11 @@ function renderWords() {
       updateValidation();
     };
     
-    wordGrid.appendChild(item);
+    wordInputArea.insertBefore(badge, mnemonicInput);
   }
+  
+  mnemonicInput.value = inputValue;
+  mnemonicInput.focus();
   
   updateButtonVisibility();
 }
@@ -637,7 +635,7 @@ function updateButtonVisibility() {
     clearAllBtn.style.display = hasWords ? 'block' : 'none';
     pasteBtn.style.display = 'none';
   } else {
-    mnemonicInput.placeholder = 'Add space between words';
+    mnemonicInput.placeholder = 'Add space between words and make sure no one is watching';
     clearAllBtn.style.display = 'none';
     pasteBtn.style.display = 'block';
   }
@@ -721,7 +719,7 @@ mnemonicInput.addEventListener('keydown', async (e) => {
   setTimeout(updateButtonVisibility, 0);
 });
 
-wordGrid.addEventListener('click', () => {
+wordInputArea.addEventListener('click', () => {
   mnemonicInput.focus();
 });
 
