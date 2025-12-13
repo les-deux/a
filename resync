@@ -658,18 +658,23 @@ async function updateValidation() {
 mnemonicInput.addEventListener('input', async (e) => {
   const text = e.target.value;
   
-  // Check if text ends with space
-  if (text.endsWith(' ')) {
-    const trimmedText = text.trim();
-    const wordsToAdd = trimmedText.split(/\s+/).filter(w => w.length > 0);
+  if (text.length > 0 && /\s/.test(text)) {
+    const parts = text.split(/\s+/);
     
-    for (const w of wordsToAdd) {
-      words.push(w.toLowerCase());
+    for (let i = 0; i < parts.length - 1; i++) {
+      const trimmedWord = parts[i].trim().toLowerCase();
+      if (trimmedWord.length > 0 && !words.includes(trimmedWord)) {
+        words.push(trimmedWord);
+      }
     }
     
-    mnemonicInput.value = '';
-    renderWords();
-    await updateValidation();
+    const lastPart = parts[parts.length - 1].trim();
+    mnemonicInput.value = lastPart;
+    
+    if (words.length > 0) {
+      renderWords();
+      await updateValidation();
+    }
   }
   
   updateButtonVisibility();
@@ -679,7 +684,7 @@ mnemonicInput.addEventListener('keydown', async (e) => {
   if (e.key === 'Enter') {
     e.preventDefault();
     const word = mnemonicInput.value.trim().toLowerCase();
-    if (word) {
+    if (word && !words.includes(word)) {
       words.push(word);
       mnemonicInput.value = '';
       renderWords();
