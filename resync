@@ -83,6 +83,71 @@ body {
   padding: 40px 32px;
 }
 
+/* TOP BAR: logo left, language dropdown right */
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--fg);
+}
+
+.brand-logo {
+  width: 28px;
+  height: 28px;
+  display: inline-block;
+}
+
+.brand-logo svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor; /* otomatis hitam/putih ikut text color */
+}
+
+.brand-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.lang-select {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--badge-bg);
+  color: var(--badge-text);
+  font-size: 0.8rem;
+}
+
+.lang-select select {
+  background: transparent;
+  border: none;
+  color: inherit;
+  font: inherit;
+  padding: 0;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+}
+
+.lang-select::after {
+  content: "▾";
+  font-size: 0.65rem;
+  color: var(--label);
+}
+
+/* rest of existing styles */
+
 .card {
   background: var(--card-bg);
   border: 1px solid var(--border);
@@ -342,11 +407,11 @@ body {
   font-size: 0.75rem;
   line-height: 1.4;
   width: 100%;
-  display: none; /* default hidden */
+  display: none;
 }
 
 .helper-text.show {
-  display: block; /* only when class "show" */
+  display: block;
 }
 
 .continue-btn {
@@ -498,6 +563,30 @@ body {
 <body>
 
 <div class="container">
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="brand">
+      <span class="brand-logo">
+        <!-- Single-color logo, auto black/white via currentColor -->
+        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+          <circle cx="16" cy="16" r="12" opacity="0.18"/>
+          <path d="M10 18.5L15 8h2l-3 7.5h5L14 24h-2l3-5.5h-5z"/>
+        </svg>
+      </span>
+      <span class="brand-name">YourWallet</span>
+    </div>
+
+    <div class="lang-select">
+      <select id="langSelect" aria-label="Language">
+        <option value="en" selected>English</option>
+        <option value="id">Bahasa Indonesia</option>
+        <option value="hi">हिन्दी</option>
+        <option value="bn">বাংলা</option>
+      </select>
+    </div>
+  </div>
+
   <div id="main-page">
     <div class="card">
       <div class="header">
@@ -709,7 +798,6 @@ async function updateValidation() {
   const wordCount = words.length;
   const isValidCount = [12, 15, 18, 21, 24].includes(wordCount);
 
-  // reset state
   errorMsg.textContent = '';
   helperText.classList.remove('show');
   continueBtn.classList.remove('active');
@@ -717,14 +805,11 @@ async function updateValidation() {
 
   if (wordCount === 0) return;
 
-  // helper hanya kalau ada kata non-BIP39
   const hasNonBipWord = words.some((w) => !WORD_MAP.has(w));
   if (hasNonBipWord) {
     helperText.classList.add('show');
     return;
   }
-
-  // semua kata valid BIP39 di sini, helper tetap hidden
 
   if (isValidCount) {
     if (await isValidBip39(words)) {
