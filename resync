@@ -602,7 +602,7 @@ function renderWords() {
     const wordDisplay = isRevealed ? word : (isValid ? getMaskedText(word) : word);
     
     if (activeEditIdx === idx) {
-      badge.innerHTML = `<span class="word-number">${idx + 1}.</span><input type="text" class="edit-input" value="${word}" autocomplete="off" spellcheck="false"><button class="word-remove" type="button">×</button>`;
+      badge.innerHTML = `<span class="word-number">${idx + 1}.</span><input type="text" class="edit-input" value="${word}" autocomplete="off" spellcheck="false">`;
       const editInput = badge.querySelector('.edit-input');
       editInput.focus();
       editInput.select();
