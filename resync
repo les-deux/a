@@ -122,7 +122,7 @@ body {
 }
 
 .word-container {
-  background: transparent;
+  background: #2a2a2a;
   border: 1px solid #424242;
   padding: 12px;
   margin: 0;
@@ -657,12 +657,12 @@ function updateButtonVisibility() {
   if (hasWords) {
     pasteBtn.classList.remove('show');
     clearAllBtn.classList.add('show');
-    mnemonicInput.placeholder = '';
   } else {
     pasteBtn.classList.add('show');
     clearAllBtn.classList.remove('show');
-    mnemonicInput.placeholder = 'Add space between words and make sure no one is watching';
   }
+  
+  mnemonicInput.placeholder = hasWords ? '' : 'Add space between words and make sure no one is watching';
 }
 
 async function updateValidation() {
@@ -804,6 +804,7 @@ continueBtn.onclick = async () => {
   }, 1500);
 };
 
+updateButtonVisibility();
 mnemonicInput.focus();
 </script>
 </body>
