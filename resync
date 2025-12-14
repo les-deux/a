@@ -111,8 +111,8 @@ body {
 }
 
 .card {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
+  background: #1a1a1a !important;
+  border: 1px solid #2a2a2a !important;
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 16px;
