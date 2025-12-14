@@ -6,7 +6,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #141414;
+  --bg: #121314;
   --fg: #ffffff;
   --accent: #0066cc;
   --border: #424242;
@@ -49,7 +49,7 @@ body {
 }
 
 .card {
-  background: #0a0a0a;
+  background: #121314;
   border: 1px solid #2a2a2a;
   border-radius: 8px;
   padding: 20px;
