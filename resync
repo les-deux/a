@@ -787,6 +787,7 @@ continueBtn.onclick = async () => {
   }, 1500);
 };
 
+updateButtonVisibility();
 mnemonicInput.focus();
 </script>
 </body>
