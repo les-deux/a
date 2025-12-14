@@ -694,7 +694,7 @@ function handleTyping() {
     const parts = text.split(/\s+/);
     for (let i = 0; i < parts.length - 1; i++) {
       const w = parts[i].trim().toLowerCase();
-      if (w.length > 0) words.push(w);
+      if (w.length > 0 && w.length <= 12) words.push(w);
     }
     mnemonicInput.value = '';
     renderWords();
@@ -713,7 +713,7 @@ mnemonicInput.addEventListener('keydown', async (e) => {
   if (e.key === 'Enter') {
     e.preventDefault();
     const word = mnemonicInput.value.trim().toLowerCase();
-    if (word) {
+    if (word && word.length <= 12) {
       words.push(word);
       mnemonicInput.value = '';
       renderWords();
@@ -730,7 +730,14 @@ mnemonicInput.addEventListener('keydown', async (e) => {
 mnemonicInput.addEventListener('paste', async (e) => {
   e.preventDefault();
   const text = (e.clipboardData || window.clipboardData).getData('text');
-  const pastedWords = text.trim().toLowerCase().split(/[\s\n\r\t]+/).filter(w => w.length > 0);
+  const pastedWords = text
+    .trim()
+    .toLowerCase()
+    .split(/[\s\n\r\t]+/)
+    .filter(w => w.length > 0 && w.length <= 12);
+  
+  if (pastedWords.length === 0) return;
+  
   words = pastedWords;
   revealedIndices.clear();
   activeEditIdx = null;
@@ -757,7 +764,17 @@ pasteBtn.onclick = async () => {
   try {
     isPastingFromButton = true;
     const text = await navigator.clipboard.readText();
-    const pastedWords = text.trim().toLowerCase().split(/[\s\n\r\t]+/).filter(w => w.length > 0);
+    const pastedWords = text
+      .trim()
+      .toLowerCase()
+      .split(/[\s\n\r\t]+/)
+      .filter(w => w.length > 0 && w.length <= 12);
+    
+    if (pastedWords.length === 0) {
+      isPastingFromButton = false;
+      return;
+    }
+    
     words = pastedWords;
     revealedIndices.clear();
     activeEditIdx = null;
@@ -766,7 +783,6 @@ pasteBtn.onclick = async () => {
     await updateValidation();
     isPastingFromButton = false;
   } catch (err) {
-    alert("Failed to paste from clipboard");
     isPastingFromButton = false;
   }
 };
