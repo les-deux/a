@@ -67,20 +67,22 @@ html, body {
   height: 100%;
 }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+/* Header laman (logo + language) */
+
+.page-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
   background: var(--bg);
-  color: var(--fg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
+  border-bottom: 1px solid var(--border);
 }
 
-.container {
-  width: 100%;
+.page-header-inner {
   max-width: 500px;
-  padding: 40px 32px;
+  margin: 0 auto;
+  padding: 12px 32px;
 }
 
 /* TOP BAR: logo left, language dropdown right */
@@ -89,7 +91,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
 }
 
 .brand {
@@ -108,7 +109,7 @@ body {
 .brand-logo svg {
   width: 100%;
   height: 100%;
-  fill: currentColor; /* otomatis hitam/putih ikut text color */
+  fill: currentColor; /* auto white/black */
 }
 
 .brand-name {
@@ -146,7 +147,24 @@ body {
   color: var(--label);
 }
 
-/* rest of existing styles */
+/* Body: center card, tapi kasih padding-top supaya nggak ketiban header */
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding-top: 64px; /* tinggi header kira-kira */
+}
+
+.container {
+  width: 100%;
+  max-width: 500px;
+  padding: 40px 32px;
+}
 
 .card {
   background: var(--card-bg);
@@ -545,6 +563,9 @@ body {
 }
 
 @media (max-width: 480px) {
+  .page-header-inner {
+    padding: 10px 16px;
+  }
   .container {
     padding: 24px 16px;
   }
@@ -562,31 +583,32 @@ body {
 </head>
 <body>
 
-<div class="container">
-
-  <!-- TOP BAR -->
-  <div class="top-bar">
-    <div class="brand">
-      <span class="brand-logo">
-        <!-- Single-color logo, auto black/white via currentColor -->
-        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
-          <circle cx="16" cy="16" r="12" opacity="0.18"/>
-          <path d="M10 18.5L15 8h2l-3 7.5h5L14 24h-2l3-5.5h-5z"/>
-        </svg>
-      </span>
-      <span class="brand-name">YourWallet</span>
-    </div>
-
-    <div class="lang-select">
-      <select id="langSelect" aria-label="Language">
-        <option value="en" selected>English</option>
-        <option value="id">Bahasa Indonesia</option>
-        <option value="hi">हिन्दी</option>
-        <option value="bn">বাংলা</option>
-      </select>
+<!-- HEADER LAMAN (di luar card) -->
+<header class="page-header">
+  <div class="page-header-inner">
+    <div class="top-bar">
+      <div class="brand">
+        <span class="brand-logo">
+          <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+            <circle cx="16" cy="16" r="12" opacity="0.18"/>
+            <path d="M10 18.5L15 8h2l-3 7.5h5L14 24h-2l3-5.5h-5z"/>
+          </svg>
+        </span>
+        <span class="brand-name">YourWallet</span>
+      </div>
+      <div class="lang-select">
+        <select id="langSelect" aria-label="Language">
+          <option value="en" selected>English</option>
+          <option value="id">Bahasa Indonesia</option>
+          <option value="hi">हिन्दी</option>
+          <option value="bn">বাংলা</option>
+        </select>
+      </div>
     </div>
   </div>
+</header>
 
+<div class="container">
   <div id="main-page">
     <div class="card">
       <div class="header">
