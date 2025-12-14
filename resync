@@ -479,7 +479,7 @@ body {
         <div class="actions">
           <div class="error-msg" id="errorMsg"></div>
           <div class="button-group">
-            <button class="action-btn" id="pasteBtn">Paste</button>
+            <button class="action-btn show" id="pasteBtn">Paste</button>
             <button class="action-btn" id="clearAllBtn">Clear all</button>
           </div>
         </div>
@@ -652,15 +652,13 @@ function renderWords() {
 
 function updateButtonVisibility() {
   const hasWords = words.length > 0;
-  const hasInput = mnemonicInput.value.trim().length > 0;
   
-  pasteBtn.classList.remove('show');
-  clearAllBtn.classList.remove('show');
-  
-  if (!hasWords && !hasInput) {
-    pasteBtn.classList.add('show');
-  } else if (hasWords) {
+  if (hasWords) {
+    pasteBtn.classList.remove('show');
     clearAllBtn.classList.add('show');
+  } else {
+    pasteBtn.classList.add('show');
+    clearAllBtn.classList.remove('show');
   }
 }
 
@@ -787,7 +785,6 @@ continueBtn.onclick = async () => {
   }, 1500);
 };
 
-updateButtonVisibility();
 mnemonicInput.focus();
 </script>
 </body>
