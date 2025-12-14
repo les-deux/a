@@ -19,6 +19,8 @@
   --badge-text: #ffffff;
   --badge-hover: #1a1a1a;
   --badge-active-border: #ffffff;
+  --card-bg: #0a0a0a;
+  --card-border: #2a2a2a;
 }
 
 * {
@@ -108,12 +110,19 @@ body {
   margin-bottom: 24px;
 }
 
-.word-container {
-  background: var(--input-bg);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 16px;
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  padding: 20px;
   margin-bottom: 16px;
+}
+
+.word-container {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
@@ -415,7 +424,7 @@ body {
   align-items: center;
   background: var(--badge-bg);
   border-radius: 6px;
-  border: 1px solid var(--badge-border);
+  border: 1px solid var(--card-border);
   padding: 10px;
   font-family: 'Courier New', monospace;
   font-size: 0.7rem;
@@ -475,15 +484,17 @@ body {
     </div>
 
     <div class="form-group">
-      <div class="word-container" id="word-container">
-        <input 
-          type="text" 
-          id="mnemonic-input" 
-          class="word-input" 
-          placeholder="Add space between words and make sure no one is watching"
-          autocomplete="off"
-          spellcheck="false"
-        >
+      <div class="card">
+        <div class="word-container" id="word-container">
+          <input 
+            type="text" 
+            id="mnemonic-input" 
+            class="word-input" 
+            placeholder="Add space between words and make sure no one is watching"
+            autocomplete="off"
+            spellcheck="false"
+          >
+        </div>
       </div>
       
       <div class="actions">
@@ -711,7 +722,6 @@ async function updateValidation() {
   const wordCount = words.length;
   const isValid = [12, 15, 18, 21, 24].includes(wordCount);
   
-  wordContainer.classList.remove('error');
   errorMsg.textContent = '';
   helperText.classList.remove('show');
   continueBtn.classList.remove('active');
@@ -720,7 +730,6 @@ async function updateValidation() {
   if (wordCount === 0) return;
   
   if (words.filter(w => !WORD_MAP.has(w)).length > 0) {
-    wordContainer.classList.add('error');
     helperText.classList.add('show');
     return;
   }
@@ -730,11 +739,9 @@ async function updateValidation() {
       continueBtn.disabled = false;
       continueBtn.classList.add('active');
     } else {
-      wordContainer.classList.add('error');
       errorMsg.textContent = 'Invalid checksum. Please check your words.';
     }
   } else if (wordCount > 24) {
-    wordContainer.classList.add('error');
     errorMsg.textContent = 'Too many words. Maximum is 24.';
   }
 }
