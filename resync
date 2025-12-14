@@ -122,7 +122,7 @@ body {
 }
 
 .word-container {
-  background: #2a2a2a;
+  background: #424242;
   border: 1px solid #424242;
   padding: 12px;
   margin: 0;
