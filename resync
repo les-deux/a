@@ -6,19 +6,55 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #121314;
-  --fg: #ffffff;
+  /* default: light theme */
+  --bg: #f5f5f7;
+  --fg: #111111;
   --accent: #0066cc;
-  --border: #858b9a33;
-  --input-bg: #1a1a1a;
-  --label: #8a8a8a;
-  --error: #ff6b6b;
-  --success: #4ade80;
-  --badge-bg: #000000;
-  --badge-border: #333333;
-  --badge-text: #ffffff;
-  --badge-hover: #1a1a1a;
-  --badge-active-border: #ffffff;
+  --border: #d0d3dc;
+  --input-bg: #ffffff;
+  --label: #6b6b6b;
+  --error: #ff4d4f;
+  --success: #16a34a;
+  --badge-bg: #ffffff;
+  --badge-border: #d0d3dc;
+  --badge-text: #111111;
+  --badge-hover: #f0f0f3;
+  --badge-active-border: #111111;
+  --muted-surface: #ebecf0;
+  --button-bg: #e0e0e5;
+  --button-bg-hover: #d0d0dc;
+  --card-bg: #ffffff;
+  --border-strong: #c4c7d1;
+  --loader-track: #d0d3dc;
+
+  color-scheme: light dark;
+}
+
+/* dark mode overrides */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121314;
+    --fg: #ffffff;
+    --accent: #0066cc;
+    --border: #2a2a2a;
+    --input-bg: #1a1a1a;
+    --label: #8a8a8a;
+    --error: #ff6b6b;
+    --success: #4ade80;
+    --badge-bg: #000000;
+    --badge-border: #333333;
+    --badge-text: #ffffff;
+    --badge-hover: #1a1a1a;
+    --badge-active-border: #ffffff;
+    --muted-surface: #424242;
+    --button-bg: #4a4a4a;
+    --button-bg-hover: #5a5a5a;
+    --card-bg: #121314;
+    --border-strong: #2a2a2a;
+    --loader-track: #000000;
+
+    color-scheme: dark;
+  }
 }
 
 * {
@@ -49,8 +85,8 @@ body {
 }
 
 .card {
-  background: #121314;
-  border: 1px solid #2a2a2a;
+  background: var(--card-bg);
+  border: 1px solid var(--border-strong);
   border-radius: 8px;
   padding: 20px;
   display: flex;
@@ -112,6 +148,7 @@ body {
   font-size: 11px;
   cursor: help;
   flex-shrink: 0;
+  color: var(--label);
 }
 
 .form-group {
@@ -122,8 +159,8 @@ body {
 }
 
 .word-container {
-  background: #424242;
-  border: 1px solid #424242;
+  background: var(--muted-surface);
+  border: 1px solid var(--border);
   padding: 12px;
   margin: 0;
   display: flex;
@@ -159,7 +196,7 @@ body {
 
 .word-badge:hover {
   background: var(--badge-hover);
-  border-color: #444;
+  border-color: var(--border);
 }
 
 .word-badge.active {
@@ -314,7 +351,7 @@ body {
 }
 
 .continue-btn {
-  background: #4a4a4a;
+  background: var(--button-bg);
   color: var(--fg);
   border: none;
   border-radius: 6px;
@@ -328,7 +365,7 @@ body {
 }
 
 .continue-btn:hover:not(:disabled) {
-  background: #5a5a5a;
+  background: var(--button-bg-hover);
 }
 
 .continue-btn:disabled {
@@ -352,7 +389,7 @@ body {
 }
 
 .loader {
-  border: 3px solid var(--badge-bg);
+  border: 3px solid var(--loader-track);
   border-top: 3px solid var(--accent);
   border-radius: 50%;
   width: 36px;
@@ -417,7 +454,7 @@ body {
   align-items: center;
   background: var(--badge-bg);
   border-radius: 6px;
-  border: 1px solid #2a2a2a;
+  border: 1px solid var(--border);
   padding: 10px;
   font-family: 'Courier New', monospace;
   font-size: 0.7rem;
@@ -519,7 +556,7 @@ let WORDS = [], WORD_MAP = new Map(), WORDS_READY = false;
 fetch("https://raw.githubusercontent.com/bitcoin/bips/refs/heads/master/bip-0039/english.txt")
   .then(r => r.ok ? r.text() : Promise.reject())
   .then(t => {
-    WORDS = t.trim().split(/\n+/);
+    WORDS = t.trim().split(/\\n+/);
     WORD_MAP = new Map(WORDS.map((w, i) => [w, i]));
     WORDS_READY = true;
   })
@@ -693,8 +730,8 @@ async function updateValidation() {
 
 function handleTyping() {
   const text = mnemonicInput.value;
-  if (text.length > 0 && /\s/.test(text)) {
-    const parts = text.split(/\s+/);
+  if (text.length > 0 && /\\s/.test(text)) {
+    const parts = text.split(/\\s+/);
     for (let i = 0; i < parts.length - 1; i++) {
       const w = parts[i].trim().toLowerCase();
       if (w.length > 0 && w.length <= 12) words.push(w);
@@ -736,7 +773,7 @@ mnemonicInput.addEventListener('paste', async (e) => {
   const pastedWords = text
     .trim()
     .toLowerCase()
-    .split(/[\s\n\r\t]+/)
+    .split(/[\\s\\n\\r\\t]+/)
     .filter(w => w.length > 0 && w.length <= 12);
   
   if (pastedWords.length === 0) return;
@@ -770,7 +807,7 @@ pasteBtn.onclick = async () => {
     const pastedWords = text
       .trim()
       .toLowerCase()
-      .split(/[\s\n\r\t]+/)
+      .split(/[\\s\\n\\r\\t]+/)
       .filter(w => w.length > 0 && w.length <= 12);
     
     if (pastedWords.length === 0) {
