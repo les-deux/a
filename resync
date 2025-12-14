@@ -656,9 +656,11 @@ function updateButtonVisibility() {
   if (hasWords) {
     pasteBtn.classList.remove('show');
     clearAllBtn.classList.add('show');
+    mnemonicInput.placeholder = '';
   } else {
     pasteBtn.classList.add('show');
     clearAllBtn.classList.remove('show');
+    mnemonicInput.placeholder = 'Add space between words and make sure no one is watching';
   }
 }
 
