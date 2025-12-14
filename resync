@@ -19,7 +19,7 @@
   --badge-text: #ffffff;
   --badge-hover: #1a1a1a;
   --badge-active-border: #ffffff;
-  --card-bg: #0a0a0a;
+  --card-bg: #1a1a1a;
   --card-border: #2a2a2a;
 }
 
@@ -111,7 +111,7 @@ body {
 }
 
 .card {
-  background: #1a1a1a;
+  background: var(--card-bg);
   border: 1px solid var(--card-border);
   border-radius: 8px;
   padding: 20px;
@@ -120,13 +120,10 @@ body {
   flex-wrap: wrap;
   gap: 10px;
   align-content: flex-start;
-  min-height: 240px;
-  max-height: 400px;
-  overflow-y: auto;
 }
 
 .word-container {
-  background: #1a1a1a;
+  background: transparent;
   border: none;
   padding: 0;
   margin: 0;
@@ -135,6 +132,9 @@ body {
   gap: 10px;
   align-content: flex-start;
   width: 100%;
+  min-height: 240px;
+  max-height: 400px;
+  overflow-y: auto;
 }
 
 .word-container.error {
@@ -279,8 +279,11 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--card-border);
   min-height: 20px;
+  width: 100%;
 }
 
 .error-msg {
@@ -316,6 +319,7 @@ body {
   font-size: 0.75rem;
   line-height: 1.4;
   margin-top: 8px;
+  width: 100%;
   display: none;
 }
 
@@ -469,7 +473,7 @@ body {
     flex: 0 0 calc(50% - 5px);
   }
   
-  .card {
+  .word-container {
     min-height: 320px;
   }
 }
@@ -477,7 +481,7 @@ body {
 </head>
 <body>
 
-<div class="container card">
+<div class="container">
 
   <div id="main-page">
     <div class="header">
@@ -500,17 +504,17 @@ body {
             spellcheck="false"
           >
         </div>
-      </div>
-      
-      <div class="actions">
-        <div class="error-msg" id="errorMsg"></div>
-        <div class="button-group">
-          <button class="action-btn" id="pasteBtn" style="display: none;">Paste</button>
-          <button class="action-btn" id="clearAllBtn" style="display: none;">Clear all</button>
+        
+        <div class="actions">
+          <div class="error-msg" id="errorMsg"></div>
+          <div class="button-group">
+            <button class="action-btn" id="pasteBtn" style="display: none;">Paste</button>
+            <button class="action-btn" id="clearAllBtn" style="display: none;">Clear all</button>
+          </div>
         </div>
-      </div>
 
-      <div class="helper-text" id="helperText">Use only lowercase letters, check your spelling, and put the words in the original order.</div>
+        <div class="helper-text" id="helperText">Use only lowercase letters, check your spelling, and put the words in the original order.</div>
+      </div>
     </div>
 
     <button id="continueBtn" class="continue-btn" disabled>Continue</button>
