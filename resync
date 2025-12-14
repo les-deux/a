@@ -122,9 +122,9 @@ body {
 }
 
 .word-container {
-  background: #2a2a2a;
-  border: none;
-  padding: 0;
+  background: transparent;
+  border: 1px solid #424242;
+  padding: 12px;
   margin: 0;
   display: flex;
   flex-wrap: wrap;
@@ -134,6 +134,7 @@ body {
   min-height: 240px;
   max-height: 400px;
   overflow-y: auto;
+  border-radius: 6px;
 }
 
 .word-badge {
