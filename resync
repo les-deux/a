@@ -485,7 +485,7 @@ body {
           </div>
         </div>
 
-        <div class="helper-text" id="helperText">Use only lowercase letters, check your spelling, and put the words in the original order.</div>
+        <div class="error-msg" id="helperText">Use only lowercase letters, check your spelling, and put the words in the original order.</div>
       </div>
 
       <button id="continueBtn" class="continue-btn" disabled>Continue</button>
