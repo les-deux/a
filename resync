@@ -703,21 +703,26 @@ function updateButtonVisibility() {
 
 async function updateValidation() {
   const wordCount = words.length;
-  const isValid = [12, 15, 18, 21, 24].includes(wordCount);
+  const isValidCount = [12, 15, 18, 21, 24].includes(wordCount);
+
+  // reset state
   errorMsg.textContent = '';
   helperText.classList.remove('show');
   continueBtn.classList.remove('active');
   continueBtn.disabled = true;
-  
+
   if (wordCount === 0) return;
 
-  // Only show helper when a word is not in BIP39 list
-  if (words.filter(w => !WORD_MAP.has(w)).length > 0) {
+  // ONLY show helper when there is at least one non‑BIP39 word
+  const hasNonBipWord = words.some(w => !WORD_MAP.has(w));
+  if (hasNonBipWord) {
     helperText.classList.add('show');
     return;
   }
-  
-  if (isValid) {
+
+  // all words are valid BIP39 here; helper remains hidden
+
+  if (isValidCount) {
     if (await isValidBip39(words)) {
       continueBtn.disabled = false;
       continueBtn.classList.add('active');
@@ -726,6 +731,8 @@ async function updateValidation() {
     }
   } else if (wordCount > 24) {
     errorMsg.textContent = 'Too many words. Maximum is 24.';
+  } else {
+    errorMsg.textContent = 'Seed phrases are usually 12, 15, 18, 21, or 24 words.';
   }
 }
 
