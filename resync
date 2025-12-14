@@ -116,6 +116,13 @@ body {
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-content: flex-start;
+  min-height: 240px;
+  max-height: 400px;
+  overflow-y: auto;
 }
 
 .word-container {
@@ -127,9 +134,7 @@ body {
   flex-wrap: wrap;
   gap: 10px;
   align-content: flex-start;
-  min-height: 240px;
-  max-height: 400px;
-  overflow-y: auto;
+  width: 100%;
 }
 
 .word-container.error {
@@ -464,7 +469,7 @@ body {
     flex: 0 0 calc(50% - 5px);
   }
   
-  .word-container {
+  .card {
     min-height: 320px;
   }
 }
