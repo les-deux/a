@@ -126,7 +126,7 @@ body {
 }
 
 .word-container {
-  background: transparent;
+  background: #1a1a1a;
   border: none;
   padding: 0;
   margin: 0;
