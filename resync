@@ -73,7 +73,7 @@ html, body {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 20;
+
   background: var(--bg);
   border-bottom: 0;
   padding: 16px 24px;
@@ -160,7 +160,7 @@ body {
   display: none;
   flex-direction: column;
   gap: 10px;
-
+  z-index: 20;
   position: absolute;
   left: 0;
   right: 0;
