@@ -73,7 +73,7 @@ html, body {
   top: 0;
   left: 0;
   right: 0;
-
+  z-index: 20; /* header under overlay in forced focus */
   background: var(--bg);
   border-bottom: 0;
   padding: 16px 24px;
@@ -148,6 +148,7 @@ body {
   position: relative;
   height: calc(100vh - 56px);
   overflow: hidden;
+  z-index: 30; /* card is above overlay + header */
 }
 
 /* CARD (pages) */
@@ -160,7 +161,7 @@ body {
   display: none;
   flex-direction: column;
   gap: 10px;
-  z-index: 20;
+
   position: absolute;
   left: 0;
   right: 0;
@@ -661,27 +662,6 @@ body {
   margin-top: 4px;
 }
 
-/* optional light tweak for alert */
-
-@media (prefers-color-scheme: light) {
-  .alert-band {
-    background: #fee2e2;
-    border-color: #f97373;
-  }
-
-  .alert-icon {
-    background: #b91c1c;
-  }
-
-  .alert-title,
-  .alert-sub,
-  .alert-extra,
-  .countdown-label,
-  .countdown-value {
-    color: #7f1d1d;
-  }
-}
-
 /* SUMMARY */
 
 .summary-section-title {
@@ -706,14 +686,6 @@ body {
   padding: 8px 10px;
   font-size: 0.78rem;
   box-shadow: 0 6px 16px rgba(15, 23, 42, 0.35);
-}
-
-@media (prefers-color-scheme: light) {
-  .summary-card {
-    background: #ffffff;
-    border-color: #e5e7eb;
-    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
-  }
 }
 
 .summary-title {
@@ -747,14 +719,6 @@ body {
   color: #e5e7eb;
 }
 
-@media (prefers-color-scheme: light) {
-  .meta-pill {
-    border-color: #e5e7eb;
-    background: #f3f4f6;
-    color: #111827;
-  }
-}
-
 /* RISK CHIP */
 
 .risk-chip {
@@ -776,15 +740,35 @@ body {
   background: #ef4444;
 }
 
+/* light-mode overrides for summary/risk/meta */
 @media (prefers-color-scheme: light) {
+  .summary-card {
+    background: #ffffff;
+    border-color: #e5e7eb;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+  }
+
+  .summary-title {
+    color: #111827;
+  }
+
+  .summary-body {
+    color: #111827;
+    opacity: 1;
+  }
+
+  .meta-pill {
+    border-color: #e5e7eb;
+    background: #f3f4f6;
+    color: #111827;
+  }
+
   .risk-chip {
     background: #fee2e2;
     border-color: #f97373;
     color: #7f1d1d;
   }
 }
-
-/* SUMMARY NOTE */
 
 .summary-note {
   font-size: 0.76rem;
@@ -921,7 +905,7 @@ body {
   margin-bottom: 2px;
 }
 
-/* FOCUS MASK: forced focus, flat overlay outside card */
+/* FOCUS MASK: card in focus, header/background dimmed */
 
 body.forced-focus { overflow: hidden; }
 
@@ -929,7 +913,7 @@ body.forced-focus { overflow: hidden; }
   position: fixed;
   inset: 0;
   background: rgba(15, 23, 42, 0.78);
-  z-index: 10;
+  z-index: 25;          /* header 20 < overlay 25 < card 30 */
   pointer-events: none;
 }
 
