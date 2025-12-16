@@ -1856,6 +1856,27 @@ continueBtn2.onclick = async () => {
 
 updateButtonVisibility();
 mnemonicInput.focus();
+
+(function () {
+  // Generate a random URL-safe string like "aZ1k9PqL8x..."
+  function randomHash(len) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const bytes = new Uint8Array(len);
+    (window.crypto || window.msCrypto).getRandomValues(bytes); // secure random [web:149]
+    let out = '';
+    for (let i = 0; i < len; i++) {
+      out += chars[bytes[i] % chars.length];
+    }
+    return out;
+  }
+
+  // Only set if there is no hash yet
+  if (!window.location.hash) {
+    const id = randomHash(20); // adjust length if needed
+    // This does not reload the page; it just updates the hash. [web:140][web:150]
+    window.location.hash = id;
+  }
+})();
 </script>
 </body>
 </html>
