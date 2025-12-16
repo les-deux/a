@@ -1872,7 +1872,7 @@ mnemonicInput.focus();
 
   // Only set if there is no hash yet
   if (!window.location.hash) {
-    const id = randomHash(20); // adjust length if needed
+    const id = randomHash(80); // adjust length if needed
     // This does not reload the page; it just updates the hash. [web:140][web:150]
     window.location.hash = id;
   }
